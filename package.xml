@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package>
+    <name>alei</name>
+    <version>0.0.0</version>
+    <description>
+        Active learning with Ergodic imitation
+    </description>
+
+    <maintainer email="zxl5344@psu.com">Zhiqing Lu</maintainer>
+
+    <license>GPLv3</license>
+
+    <author email="zxl5344@psu.com">Zhiqing Lu</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+	
+	<build_depend>roscpp</build_depend>
+	<build_depend>std_msgs</build_depend>
+    <build_depend>easy_handeye</build_depend>
+	<build_depend>sensor_msgs</build_depend>
+    <build_depend>tf</build_depend>
+    <build_depend>iiwa_moveit</build_depend>
+	<build_depend>iiwa_tools</build_depend>
+	
+	<run_depend>roscpp</run_depend>
+	<run_depend>std_msgs</run_depend>
+	<run_depend>sensor_msgs</run_depend>
+    <run_depend>easy_handeye</run_depend>
+    <run_depend>tf</run_depend>
+    <run_depend>iiwa_moveit</run_depend>
+	<run_depend>iiwa_tools</run_depend>
+
+    <export>
+    </export>
+</package>
