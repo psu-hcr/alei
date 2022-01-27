@@ -11,7 +11,7 @@ class KoopmanOperator:
 	def __init__(self, _initmeasure, _dt):
 	
 		# define size of Koopman Operator
-		self.basissize = 57
+		self.basissize = 77
 		self.inputsize = 7
 		self.size = self.basissize + self.inputsize
 		
@@ -46,6 +46,8 @@ class KoopmanOperator:
 		G = G/M
 		invG = np.linalg.pinv(G)
 		self.K = np.dot(A, invG)
+		self.K = np.nan_to_num(np.log(self.K))/self.dt		# log(K)/t_s
+		#print(self.K)
 		self.K_x = self.K[0:self.basissize, 0:self.basissize] 
 		self.K_u = self.K[0:self.basissize, self.basissize:] 
 		
@@ -53,6 +55,13 @@ class KoopmanOperator:
 		self.dfdx = self.K_x
 		self.dfdu = self.K_u
 		
+	def eig(self):
+		"""
+		This function calculate eig of K_x. If basis function is right, k_x should be stable
+		"""
+		(eigen, M) = np.linalg.eig(self.K_x)
+		print("eigenvalue of K_x")
+		print(eigen)
 		
 	def step(self, current_measure):
 		"""
@@ -100,62 +109,87 @@ class KoopmanOperator:
 		self.pos = measure[:7]
 		self.vel = measure[7:14]
 		self.Torque = measure[14:21]
-		self.endpos = measure[21:]
 		
 		# basis function 0-13 are pos & vel
 		self.basis[:14] = measure[:14]
 		
-		# 14-21 are fianl position and orientation of end effector
-		self.basis[14:21] = self.endpos
-		
 		# Last 7 are input/eff
 		self.basis[(self.size-self.inputsize):] = self.Torque
 		
-		# basis function 21-29
-		self.basis[21] = 1															# constant variable
-		self.basis[22] = self.pos[0]*self.pos[1]
-		self.basis[23] = self.pos[1]*self.pos[2]
-		self.basis[24] = self.pos[2]*self.pos[3]
-		self.basis[25] = self.pos[3]*self.pos[4]
-		self.basis[26] = self.pos[4]*self.pos[5]
-		self.basis[27] = self.pos[5]*self.pos[6]
-		self.basis[28] = (self.pos[0]**2)*(self.pos[1]**2)
-		self.basis[29] = (self.pos[1]**2)*(self.pos[2]**2)
+		self.basis[14] = 1															# constant variable
+		self.basis[15] = self.pos[0]*self.pos[1]
+		self.basis[16] = self.pos[1]*self.pos[2]
+		self.basis[17] = self.pos[2]*self.pos[3]
+		self.basis[18] = self.pos[3]*self.pos[4]
+		self.basis[19] = self.pos[4]*self.pos[5]
+		self.basis[20] = self.pos[5]*self.pos[6]
 		
-		# basis function 30-39
-		self.basis[30] = (self.pos[2]**2)*(self.pos[3]**2)
-		self.basis[31] = (self.pos[3]**2)*(self.pos[4]**2)
-		self.basis[32] = (self.pos[4]**2)*(self.pos[5]**2)
-		self.basis[33] = (self.pos[5]**2)*(self.pos[6]**2)
-		self.basis[34] = (self.pos[0]**3)*(self.pos[1]**3)
-		self.basis[35] = (self.pos[1]**3)*(self.pos[2]**3)
-		self.basis[36] = (self.pos[2]**3)*(self.pos[3]**3)
-		self.basis[37] = (self.pos[3]**3)*(self.pos[4]**3)
-		self.basis[38] = (self.pos[4]**3)*(self.pos[5]**3)
-		self.basis[39] = (self.pos[5]**3)*(self.pos[6]**3)
+		self.basis[21] = (self.pos[0]**2)*(self.pos[1]**2)
+		self.basis[22] = (self.pos[1]**2)*(self.pos[2]**2)
+		self.basis[23] = (self.pos[2]**2)*(self.pos[3]**2)
+		self.basis[24] = (self.pos[3]**2)*(self.pos[4]**2)
+		self.basis[25] = (self.pos[4]**2)*(self.pos[5]**2)
+		self.basis[26] = (self.pos[5]**2)*(self.pos[6]**2)
 		
-		# basis function 40-49
-		self.basis[40] = self.vel[0]*self.vel[1]
-		self.basis[41] = self.vel[1]*self.vel[2]
-		self.basis[42] = self.vel[2]*self.vel[3]
-		self.basis[43] = self.vel[3]*self.vel[4]
-		self.basis[44] = self.vel[4]*self.vel[5]
-		self.basis[45] = self.vel[5]*self.vel[6]
-		self.basis[46] = (self.vel[0]**2)*(self.vel[1]**2)
-		self.basis[47] = (self.vel[1]**2)*(self.vel[2]**2)
-		self.basis[48] = (self.vel[2]**2)*(self.vel[3]**2)
-		self.basis[49] = (self.vel[3]**2)*(self.vel[4]**2)
+		self.basis[27] = (self.pos[0]**3)*(self.pos[1]**3)
+		self.basis[28] = (self.pos[1]**3)*(self.pos[2]**3)
+		self.basis[29] = (self.pos[2]**3)*(self.pos[3]**3)
+		self.basis[30] = (self.pos[3]**3)*(self.pos[4]**3)
+		self.basis[31] = (self.pos[4]**3)*(self.pos[5]**3)
+		self.basis[32] = (self.pos[5]**3)*(self.pos[6]**3)
 		
-		# basis function 50-57
-		self.basis[50] = (self.vel[4]**2)*(self.vel[5]**2)
-		self.basis[51] = (self.vel[5]**2)*(self.vel[6]**2)
-		self.basis[52] = (self.vel[0]**3)*(self.vel[1]**3)
-		self.basis[53] = (self.vel[1]**3)*(self.vel[2]**3)
-		self.basis[54] = (self.vel[2]**3)*(self.vel[3]**3)
-		self.basis[55] = (self.vel[3]**3)*(self.vel[4]**3)
-		self.basis[56] = (self.vel[4]**3)*(self.vel[5]**3)
-		self.basis[57] = (self.vel[5]**3)*(self.vel[6]**3)		
+		self.basis[33] = self.vel[0]*self.vel[1]
+		self.basis[34] = self.vel[1]*self.vel[2]
+		self.basis[35] = self.vel[2]*self.vel[3]
+		self.basis[36] = self.vel[3]*self.vel[4]
+		self.basis[37] = self.vel[4]*self.vel[5]
+		self.basis[38] = self.vel[5]*self.vel[6]
+		
+		self.basis[39] = (self.vel[0]**2)*(self.vel[1]**2)
+		self.basis[40] = (self.vel[1]**2)*(self.vel[2]**2)
+		self.basis[41] = (self.vel[2]**2)*(self.vel[3]**2)
+		self.basis[42] = (self.vel[3]**2)*(self.vel[4]**2)
+		self.basis[43] = (self.vel[4]**2)*(self.vel[5]**2)
+		self.basis[44] = (self.vel[5]**2)*(self.vel[6]**2)
+		
+		self.basis[45] = (self.vel[0]**3)*(self.vel[1]**3)
+		self.basis[46] = (self.vel[1]**3)*(self.vel[2]**3)
+		self.basis[47] = (self.vel[2]**3)*(self.vel[3]**3)
+		self.basis[48] = (self.vel[3]**3)*(self.vel[4]**3)
+		self.basis[49] = (self.vel[4]**3)*(self.vel[5]**3)
+		self.basis[50] = (self.vel[5]**3)*(self.vel[6]**3)	
+		
+		self.basis[51] = np.cos(self.pos[0])
+		self.basis[52] = np.cos(self.pos[1])
+		self.basis[53] = np.cos(self.pos[2])
+		self.basis[54] = np.cos(self.pos[3])
+		self.basis[55] = np.cos(self.pos[4])
+		self.basis[56] = np.cos(self.pos[5])
+		self.basis[57] = np.cos(self.pos[6])
+		
+		self.basis[58] = np.sin(self.pos[0])
+		self.basis[59] = np.sin(self.pos[1])
+		self.basis[60] = np.sin(self.pos[2])
+		self.basis[61] = np.sin(self.pos[3])
+		self.basis[62] = np.sin(self.pos[4])
+		self.basis[63] = np.sin(self.pos[5])
+		self.basis[64] = np.sin(self.pos[6])
+		
+		self.basis[65] = np.cos(self.pos[0])*np.cos(self.pos[1])
+		self.basis[66] = np.cos(self.pos[1])*np.cos(self.pos[2])
+		self.basis[67] = np.cos(self.pos[2])*np.cos(self.pos[3])
+		self.basis[68] = np.cos(self.pos[3])*np.cos(self.pos[4])
+		self.basis[69] = np.cos(self.pos[4])*np.cos(self.pos[5])
+		self.basis[70] = np.cos(self.pos[5])*np.cos(self.pos[6])
+		
+		self.basis[71] = np.sin(self.pos[0])*np.sin(self.pos[1])
+		self.basis[72] = np.sin(self.pos[1])*np.sin(self.pos[2])
+		self.basis[73] = np.sin(self.pos[2])*np.sin(self.pos[3])
+		self.basis[74] = np.sin(self.pos[3])*np.sin(self.pos[4])
+		self.basis[75] = np.sin(self.pos[4])*np.sin(self.pos[5])
+		self.basis[76] = np.sin(self.pos[5])*np.sin(self.pos[6])
 
+		
 		return self.basis
 		
 	
@@ -168,7 +202,7 @@ def main():
 	dt = 1./500.
 	
 	# convert data from datasheets into arrays
-	df = pd.read_csv("/home/zxl5344/catkin_ws/src/iiwa_ros/iiwa_ros/scripts/jointposition_T.csv")
+	df = pd.read_csv("/home/zxl5344/test/src/alei/robotdata/wave_demo.csv")
 	measuredata = pd.DataFrame.to_numpy(df)
 	
 	# Get total number of data
@@ -184,6 +218,15 @@ def main():
 	# calculate Koopman Operator
 	Koop.compute_operator()
 	
+	# Ouput array into a datasheets
+	df = pd.DataFrame(Koop.K)
+	path = '/home/zxl5344/test/src/alei/robotdata/KoopOper.csv'
+	df.to_csv(path, index=False)
+	
+	# calculate K_x eig
+	Koop.eig()
+	
+	"""
 	# init Koopman estimate
 	K_est = Koop.basis_func(measuredata[0,:])
 	# CurrK_est = K_est[:Koop.basissize]
@@ -196,15 +239,10 @@ def main():
 		K_est = np.vstack((K_est, NextK_est))
 		# CurrK_est = NextK_est
 		
-		"""
+		
 		NextK_est = Koop.step(measuredata[i,:])
 		K_est = np.vstack((K_est, NextK_est))
-		"""
 		
-	# Ouput array into a datasheets
-	df = pd.DataFrame(Koop.K)
-	path = '/home/zxl5344/catkin_ws/src/iiwa_ros/iiwa_ros/scripts/KO.csv'
-	df.to_csv(path, index=False)
 	
 	# plot real data and Koopman guess data
 	t = np.arange(datalength) * dt
@@ -259,6 +297,7 @@ def main():
 	plt.legend()
 	
 	plt.show()
+	"""
 	
 	
 		

@@ -60,6 +60,14 @@ class sac {
   arma::mat xforward(const arma::mat& u);//forward simulation of x
   arma::mat rhoback(const arma::mat& xsol,const arma::mat& u); //backward simulation of the adjoint
   inline arma::vec f(const arma::vec& rho, xupair pair){
+    //std::cout<<"t"<<std::endl;
+    //std::cout<<pair.t<<std::endl;
+    //std::cout<<"x"<<std::endl;
+    //std::cout<<pair.x<<std::endl;
+    //std::cout<<"dldx"<<std::endl;
+    //std::cout<<(cost->dldx(pair.x,pair.u,pair.t))<<std::endl;
+    //std::cout<<"dfdx"<<std::endl;
+    //std::cout<<(sys->dfdx(pair.x,pair.u).t()*rho)<<std::endl;
   	return -cost->dldx(pair.x,pair.u,pair.t) - sys->dfdx(pair.x,pair.u).t()*rho;}//f for rho backwards sim
 	};
 
@@ -76,7 +84,7 @@ void sac<system,objective>::SAC_calc(){
   arma::mat utemp = ulist;
   arma::mat usched = arma::zeros<arma::mat>(umax.n_rows,T_index);
   arma::mat Jtau = arma::zeros<arma::mat>(1,T_index);
-  double J1init,J1new,dJmin,alphad,lambda; 
+  double J1init,J1new,dJmin,alphad,lambda,J_QR,J_fisher,J_boundary; 
   xsol = xforward(ulist);
   J1init = cost->calc_cost(xsol,ulist);//must execute before rhoback for ergodic cost fxns
   rhosol = rhoback(xsol, ulist);
@@ -86,25 +94,35 @@ void sac<system,objective>::SAC_calc(){
   double dJdlam;
   
   for(int i = 0; i<T_index;i++){
-    Lam = sys->hx(xsol.col(i)).t()*rhosol.col(i)*rhosol.col(i).t()*sys->hx(xsol.col(i));//std::cout<<Lam;
+    Lam = sys->hx(xsol.col(i)).t()*rhosol.col(i)*rhosol.col(i).t()*sys->hx(xsol.col(i));
+    /*std::cout<<i<<std::endl;
+    std::cout<<"rho"<<std::endl;
+    std::cout<<(rhosol.col(i))<<std::endl;
+    std::cout<<"Lam"<<std::endl;
+    std::cout<<(Lam)<<std::endl;
+    std::cout<<"Lam +cost->R"<<std::endl;
+    std::cout<<(Lam +cost->R)<<std::endl;
+    std::cout<<"det"<<std::endl;
+    std::cout<<arma::det(Lam +cost->R)<<std::endl;*/
     usched.col(i) = arma::solve((Lam +cost->R), (Lam*ulist.col(i) + sys->hx(xsol.col(i)).t()*rhosol.col(i)*alphad));
     //usched.col(i) = (Lam +cost->R).i()*(Lam*ulist.col(i) + sys->hx(xsol.col(i)).t()*rhosol.col(i)*alphad); //error is in (Lam +cost->R).i()
     //usched.col(i) = arma::pinv(Lam +cost->R)*(Lam*ulist.col(i) + sys->hx(xsol.col(i)).t()*rhosol.col(i)*alphad); //Lu: try to use pinv to avoid singular
     dJdlam = dJdlam_t(xsol.col(i),rhosol.col(i),usched.col(i),ulist.col(i));
     Jtau.col(i) =arma::norm(usched.col(i))+dJdlam+pow((double)i*sys->dt,beta);
   }
-    tautemp = Jtau.index_min(); 
-    ustar=saturation(usched.col(tautemp));//ustar.u=usched.col(0);
-    int k = 0; J1new = 1000*J1init;
-    while(J1new-J1init>dJmin && k<= kmax){
-      lambda = delt_init*pow(beta,k);
-      tau[0] = sys->tcurr + (double)tautemp*sys->dt -(lambda/2);
-      tau[1] = sys->tcurr + (double)tautemp*sys->dt+(lambda/2);
-      utemp = uInc(ustar,tau);
-      xsol = xforward(utemp);
-      J1new = cost->calc_cost(xsol,utemp);
-      k++;}
-    ulist = utemp;
+  tautemp = Jtau.index_min(); 
+  ustar=saturation(usched.col(tautemp));//ustar.u=usched.col(0);
+  int k = 0; J1new = 1000*J1init;
+  while(J1new-J1init>dJmin && k<= kmax){
+    lambda = delt_init*pow(beta,k);
+    tau[0] = sys->tcurr + (double)tautemp*sys->dt -(lambda/2);
+    tau[1] = sys->tcurr + (double)tautemp*sys->dt+(lambda/2);
+    utemp = uInc(ustar,tau);
+    xsol = xforward(utemp);
+    J1new = cost->calc_cost(xsol,utemp);
+    k++;
+  }
+  ulist = utemp;
    
 return;}
  
@@ -131,9 +149,11 @@ arma::mat sac<system,objective>::rhoback(const arma::mat& xsol,const arma::mat& 
     current.x =xsol.col(i);
     current.u = u.col(i);
     current.t = sys->tcurr+(double)i*sys->dt;
+    //std::cout<<rho0<<std::endl;
     rho0 = RK4_step<sac,xupair>(this,rho0,current,-1.0*sys->dt);
   } 
-return rhosol;}
+  return rhosol;
+}
 
 template <class system, class objective>
 double sac<system,objective>::dJdlam_t(const arma::vec& xt, const arma::vec& rhot, const arma::vec& u2t, 

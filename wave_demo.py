@@ -18,6 +18,7 @@ from iiwa_tools.srv import GetIK, GetIKRequest, GetFK
 from geometry_msgs.msg import Pose
 from math import cos, pi
 import numpy as np
+import pandas as pd
 
 
 
@@ -31,7 +32,7 @@ class Waver:
 		self.rob_state=JointState()
 		
 		# initial storing
-		self.measurement = np.zeros(28)
+		self.measurement = np.zeros(21)
 		
 		# initial time
 		self.starttime = rospy.get_rostime().secs
@@ -63,7 +64,7 @@ class Waver:
 		
 		
 		# setup constant applied Torque
-		self.constantT = [20, 90, 30, 30, 5, 4, 0.5]
+		self.constantT = [30, 100, 40, 40, 5, 4, 0.5]
 		
 		# setup shutdown
 		rospy.on_shutdown(self.back2zeros)
@@ -81,16 +82,14 @@ class Waver:
 		update data and storing position, velocity ,effort, end effector pos and orientation
 		"""
 		self.rob_state = data
-		self.currentpose()
-		self.measurement = np.vstack((self.measurement, np.concatenate((self.sol_pose.position.x,self.sol_pose.position.y, self.sol_pose.position.z, self.sol_pose.orientation.x, self.sol_pose.orientation.y, self.sol_pose.orientation.z, self.sol_pose.orientation.w,self.rob_state.position,self.rob_state.velocity,self.Torque.data), axis=None)))
+		self.measurement = np.vstack((self.measurement, np.concatenate((self.rob_state.position,self.rob_state.velocity,self.Torque.data), axis=None)))
+		#print(self.measurement.shape)
 		
 	def back2zeros(self):
 		"""
 		Move robot back to zeros pos and shut down
 		"""
 		rospy.loginfo("closing node")
-		self.goal.data = [0, 0, 0, 0, 0, 0, 0]
-		rospy.sleep(5.)
 		
 		
 	def CaluTorque(self):
@@ -100,10 +99,11 @@ class Waver:
 		# current time
 		now = rospy.get_rostime().secs - self.starttime
 		#print('now:')
-		#print(now)
+		#print(now/10000000)
 		
 		# calculate cos
 		cosine = cos(pi*now)
+		print(cosine)
 		
 		# calculate force
 		
@@ -148,10 +148,18 @@ def main():
 
     try:
         test = Waver()
+		
     except rospy.ROSInterruptException: 
     	pass
-
+	
     rospy.spin()
+	
+	# output data to excel
+    df = pd.DataFrame(test.measurement)
+    print(test.measurement.shape)
+    print(df.shape)
+    path = '/home/zxl5344/test/src/alei/robotdata/wave_demo.csv'
+    df.to_csv(path, header=False, index=False)
 
 
 if __name__=='__main__':

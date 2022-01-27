@@ -38,7 +38,7 @@ KoopSys<basis>::KoopSys (double _dt, basis *_zfuncs){
     dt = _dt;//step size
     A = arma::zeros(zfuncs->zdim,zfuncs->zdim);
     G = arma::zeros(zfuncs->zdim,zfuncs->zdim);
-    K = arma::randn<arma::mat>(zfuncs->zdim,zfuncs->zdim);
+    K = arma::randu<arma::mat>(zfuncs->zdim,zfuncs->zdim); //std::cout<<K<<std::endl;
     //Kx = arma::eye(zfuncs->xdim,zfuncs->xdim);
     //Ku = arma::eye(zfuncs->udim,zfuncs->udim);
     
@@ -50,6 +50,7 @@ arma::vec KoopSys<basis>::proj_func (const arma::vec& x){
 }
 template<class basis>
 arma::vec KoopSys<basis>::f(const arma::vec& zx, const arma::vec& u){
+    //arma::vec zxproj = zfuncs->proj_func(zx);std::cout<<zxproj<<std::endl;
     arma::vec zu = zfuncs->zu(zx,u);
 	arma::vec zdot = Kx*zx+Ku*zu;
     return zdot;
@@ -88,13 +89,13 @@ void KoopSys<basis>::calc_K(const arma::vec& x,const arma::vec& u){
     arma::vec zt = zfuncs->zxu(Xprev,Uprev);//cout<<ztplus1.t()<<endl;
     //std::cout<<arma::size(ztplus1)<<arma::size(ztplus1)<<std::endl;
     A = A + (ztplus1*zt.t()-A)/Mindex;//std::cout<<A<<std::endl;
-    G = G + (zt*zt.t()-G)/Mindex;//cout<<G<<endl;
+    G = G + (zt*zt.t()-G)/Mindex;//std::cout<<G<<std::endl;
 	try{
     Kdisc=A*arma::pinv(G);
 	K = arma::randn<arma::mat>(zfuncs->zdim,zfuncs->zdim);
 	arma::cx_mat Ktemp;
     Ktemp=arma::logmat(Kdisc);//dt;
-    K=arma::real(Ktemp)/dt;//cout<<K<<endl;
+    K=arma::real(Ktemp)/dt;//std::cout<<K<<std::endl;
     }
     catch (...){//std::cout<<"This is a problem."<<std::endl;
     //K = 0.1*arma::ones<arma::mat>(zfuncs->zdim,zfuncs->zdim);

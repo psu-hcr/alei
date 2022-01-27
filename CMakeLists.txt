@@ -44,6 +44,12 @@ target_link_libraries(f8lqr
 	${ARMADILLO_LIBRARIES}
 	${catkin_LIBRARIES}
 	${std_msgs_LIBRARIES})
+	
+add_executable(f8IK figure8_IK.cpp)
+target_link_libraries(f8IK
+	${ARMADILLO_LIBRARIES}
+	${catkin_LIBRARIES}
+	${std_msgs_LIBRARIES})
 
 add_executable(sac_koopquad errsac_koopquad.cpp)
 target_link_libraries(sac_koopquad ${ARMADILLO_LIBRARIES})
