@@ -34,7 +34,8 @@ arma::vec unom(double t){
 class figureight{
 	
 	public:
-	double t_dJS = 0.;	//time counter for desire joint state
+	double t_dJS = 0.;		//time counter for desire joint state
+	bool counter = true;	//counter for initial extra step
 	ros::NodeHandle *nh;
 	ros::Publisher pub;
 	ros::Subscriber sub;
@@ -78,6 +79,8 @@ class figureight{
 		
 		pub = nh->advertise<std_msgs::Float64MultiArray>("/iiwa/TorqueController/command",10);
 		sub = nh->subscribe("/iiwa/joint_states", 1000, &figureight::chatterCallback, this);
+		arma::arma_rng::set_seed(500);
+		
 		
 		// output data info to excel
 		(*myfile)<<"time, joint state 1 error, joint state 2 error, joint state 3 error, joint state 4 error, joint state 5 error, joint state 6 error, joint state 7 error,";
@@ -129,21 +132,31 @@ class figureight{
 	};
 	
 	void calc_u(const ros::TimerEvent& event){
-		
 		// current state
 		Xcurr = arma::join_cols(pos, vel);//std::cout<<Xcurr<<std::endl;
 		
 		//update & calcluate Koopman Operator
 		systKPointer->calc_K(Xcurr,Ucurr);//std::cout<<(systKPointer->K)<<std::endl;
-		
-		//calculate SAC
-		sacsysKPointer->SAC_calc();
-		
-		Ucurr = sacsysKPointer->ulist.col(0); //std::cout<<Ucurr;
-		sacsysKPointer->unom_shift();
+
+		if (counter){
 			
-		output.data.clear();
-		output.data.insert(output.data.end(), Ucurr.begin(), Ucurr.end()); std::cout<<output<<std::endl;
+			// extra initial movement for Koopman operator
+			Ucurr = {30, -60, 40, -40, 10, 10, 5};
+			output.data.clear();
+			output.data = {30, -60, 40, -40, 10, 10, 5}; std::cout<<output<<std::endl;
+			counter = false;
+		}
+		else {
+			
+			//calculate SAC
+			sacsysKPointer->SAC_calc();
+
+			Ucurr = sacsysKPointer->ulist.col(0); //std::cout<<Ucurr;
+			sacsysKPointer->unom_shift();
+
+			output.data.clear();
+			output.data.insert(output.data.end(), Ucurr.begin(), Ucurr.end()); std::cout<<output<<std::endl;
+		}
 		
 		// output time, current state error and current output to excel
         (*myfile)<<systKPointer->tcurr<<",";
