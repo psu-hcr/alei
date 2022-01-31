@@ -35,7 +35,7 @@ class figureight{
 	
 	public:
 	double t_dJS = 0.;		//time counter for desire joint state
-	bool counter = true;	//counter for initial extra step
+	int counter = 10;		//counter for initial extra step
 	ros::NodeHandle *nh;
 	ros::Publisher pub;
 	ros::Subscriber sub;
@@ -79,7 +79,6 @@ class figureight{
 		
 		pub = nh->advertise<std_msgs::Float64MultiArray>("/iiwa/TorqueController/command",10);
 		sub = nh->subscribe("/iiwa/joint_states", 1000, &figureight::chatterCallback, this);
-		arma::arma_rng::set_seed(500);
 		
 		
 		// output data info to excel
@@ -143,20 +142,18 @@ class figureight{
 			// extra initial movement for Koopman operator
 			Ucurr = {30, -60, 40, -40, 10, 10, 5};
 			output.data.clear();
-			output.data = {30, -60, 40, -40, 10, 10, 5}; std::cout<<output<<std::endl;
-			counter = false;
+			output.data = {30, -60, 40, -40, 10, 10, 5}; 
+			counter--;
 		}
 		else {
-			
 			//calculate SAC
 			sacsysKPointer->SAC_calc();
-
-			Ucurr = sacsysKPointer->ulist.col(0); //std::cout<<Ucurr;
-			sacsysKPointer->unom_shift();
-
-			output.data.clear();
-			output.data.insert(output.data.end(), Ucurr.begin(), Ucurr.end()); std::cout<<output<<std::endl;
+			Ucurr = sacsysKPointer->ulist.col(0); //std::cout<<Ucurr<<std::endl;
+			sacsysKPointer->unom_shift(); 
+			output.data.clear(); 
+			output.data.insert(output.data.end(), Ucurr.begin(), Ucurr.end()); 
 		}
+		std::cout<<output<<std::endl;
 		
 		// output time, current state error and current output to excel
         (*myfile)<<systKPointer->tcurr<<",";
@@ -168,7 +165,7 @@ class figureight{
 			(*myfile)<<Ucurr(i)<<",";
 		}
 		
-		// output sac final predict cost of QR, fisher, boundary //to do: change to init call
+		// output sac final predict cost of QR, fisher, boundary 
 		(*myfile)<<sacsysKPointer->cost->QR<<",";
 		(*myfile)<<sacsysKPointer->cost->fisher<<",";
 		(*myfile)<<sacsysKPointer->cost->boundary<<",";
@@ -185,6 +182,7 @@ class figureight{
 		(*myfile)<<sacsysKPointer->cost->fisher_cost(Xcurr, Ucurr, systKPointer->tcurr)<<",";
 		
 		(*myfile)<<"\n";
+		
 	};
 	
 	
@@ -201,13 +199,14 @@ int main(int argc, char **argv){
 	const double DT=0.05;		//Time Duration for calculate torque
 	const double DTP = 0.002;	//Time Duration for publishing torque
 	const double t_calc = 0.1;
-	const double T = 0.5;		// Horizon for SAC
+	const double T = 0.25;		// Horizon for SAC	
 	
 	// define iiwa basis function class
 	iiwaBasis3 iiwaBasis;
 	
 	// define Koopman Operator class
 	KoopSys<iiwaBasis3> systK(DT, &iiwaBasis);
+	systK.K.save("/home/zxl5344/test/src/alei/robotdata/KO_initial.csv", arma::csv_ascii);
 	
 	// define desire traj class
 	f8traj_IK<KoopSys<iiwaBasis3>> f8traj(&systK);
@@ -234,7 +233,7 @@ int main(int argc, char **argv){
 	//cout<<Boundarycoe<<endl;
 	
 	// define joint limit
-	arma::vec Joint_limit = {2.95, 2.09, 2.96, 2.09, 2.96, 2.09, 3.05}; 
+	arma::vec Joint_limit = {2.94, 2.09, 2.96, 2.09, 2.96, 2.09, 3.05}; 
 	
 	// define cost function errorcost
 	errorcostIK<KoopSys<iiwaBasis3>, f8traj_IK<KoopSys<iiwaBasis3>>> costK(Qk,R,&f8traj,&systK,noisecov, Joint_limit);
@@ -261,7 +260,7 @@ int main(int argc, char **argv){
 	// publish torque
 	ros::Timer timerP = nh.createTimer(ros::Duration(DTP), &figureight::publishing, &feight);
 	
-	ros::spin();
+	ros::spin();		//spin command
 	//spinner.spin();	//spin command for multithread
 	
 	// close the file

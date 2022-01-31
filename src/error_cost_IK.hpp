@@ -86,6 +86,7 @@ class errorcostIK {
 	  boundary = 0.0;
       for (int i = 0; i<x.n_cols; i++){
         //xproj = sys->proj_func(x.col(i));
+		//std::cout<<i<<std::endl;
 		QR+=QR_cost(x.col(i),u.col(i),sys->tcurr+(double)i*sys->dt);
 		fisher+=fisher_cost(x.col(i),u.col(i),sys->tcurr+(double)i*sys->dt);
 		boundary+=boundary_cost(x.col(i),u.col(i),sys->tcurr+(double)i*sys->dt);

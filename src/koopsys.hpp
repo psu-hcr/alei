@@ -34,6 +34,10 @@ class KoopSys {
 
 template<class basis>
 KoopSys<basis>::KoopSys (double _dt, basis *_zfuncs){
+
+    // fix seed for randon number
+	arma::arma_rng::set_seed(50);
+    
     zfuncs=_zfuncs;//basis functions/functions of the observables
     dt = _dt;//step size
     A = arma::zeros(zfuncs->zdim,zfuncs->zdim);

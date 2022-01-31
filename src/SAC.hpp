@@ -50,6 +50,7 @@ class sac {
   sac(system *_sys, objective *_cost, double _tcalc,double _T,const arma::vec& _umax,std::function<arma::vec(double)> _unom){
     sys = _sys; cost=_cost; tcalc=_tcalc; T=_T;umax = _umax; unom = _unom;
     T_index = T/sys->dt;
+	//std::cout<<T_index<<std::endl;
     ulist = arma::zeros(umax.n_rows,T_index); 
     for(int i = 0;i<ulist.n_cols-1;i++) ulist.col(i) = unom(sys->tcurr + (double)i*sys->dt);
   };
@@ -95,8 +96,8 @@ void sac<system,objective>::SAC_calc(){
   
   for(int i = 0; i<T_index;i++){
     Lam = sys->hx(xsol.col(i)).t()*rhosol.col(i)*rhosol.col(i).t()*sys->hx(xsol.col(i));
-    /*std::cout<<i<<std::endl;
-    std::cout<<"rho"<<std::endl;
+    //std::cout<<i<<std::endl;
+    /*std::cout<<"rho"<<std::endl;
     std::cout<<(rhosol.col(i))<<std::endl;
     std::cout<<"Lam"<<std::endl;
     std::cout<<(Lam)<<std::endl;
@@ -106,10 +107,10 @@ void sac<system,objective>::SAC_calc(){
     std::cout<<arma::det(Lam +cost->R)<<std::endl;*/
     usched.col(i) = arma::solve((Lam +cost->R), (Lam*ulist.col(i) + sys->hx(xsol.col(i)).t()*rhosol.col(i)*alphad));
     //usched.col(i) = (Lam +cost->R).i()*(Lam*ulist.col(i) + sys->hx(xsol.col(i)).t()*rhosol.col(i)*alphad); //error is in (Lam +cost->R).i()
-    //usched.col(i) = arma::pinv(Lam +cost->R)*(Lam*ulist.col(i) + sys->hx(xsol.col(i)).t()*rhosol.col(i)*alphad); //Lu: try to use pinv to avoid singular
     dJdlam = dJdlam_t(xsol.col(i),rhosol.col(i),usched.col(i),ulist.col(i));
     Jtau.col(i) =arma::norm(usched.col(i))+dJdlam+pow((double)i*sys->dt,beta);
   }
+  
   tautemp = Jtau.index_min(); 
   ustar=saturation(usched.col(tautemp));//ustar.u=usched.col(0);
   int k = 0; J1new = 1000*J1init;
@@ -163,8 +164,10 @@ double sac<system,objective>::dJdlam_t(const arma::vec& xt, const arma::vec& rho
 //shift the unom values with time
 template <class system, class objective>
 void sac<system,objective>::unom_shift(){
-  for(int i = 0;i<ulist.n_cols-1;i++) ulist.col(i) = ulist.col(i+1);
-    ulist.col(ulist.n_rows) = unom(sys->tcurr +T+sys->dt);
+  for(int i = 0;i<ulist.n_cols-1;i++) {
+  	ulist.col(i) = ulist.col(i+1);
+  }
+  ulist.col(T_index-1) = unom(sys->tcurr +T+sys->dt);
 };
 
 
