@@ -22,11 +22,11 @@ class lqr {
       
   public: 
 	std::function<arma::vec(double)> xd;
-  lqr(const arma::mat& _Q,const arma::mat& _R,const arma::mat& _Qf,int _horizon,const arma::vec& _umax, std::function<arma::vec(double)> _xd, double _dt){
-    Q=_Q; R=_R; Rinv = _R.i(); Qf=_Qf; 
-	horizon = _horizon; umax = _umax; xd=_xd, dt = _dt;
-	xdim = xd(0).n_rows;udim = umax.n_rows;
-	Klist.zeros(udim*(horizon),xdim);
+  	lqr(const arma::mat& _Q,const arma::mat& _R,const arma::mat& _Qf,int _horizon,const arma::vec& _umax, std::function<arma::vec(double)> _xd, double _dt){
+    	Q=_Q; R=_R; Rinv = _R.i(); Qf=_Qf; 
+		horizon = _horizon; umax = _umax; xd=_xd, dt = _dt;
+		xdim = xd(0).n_rows;udim = umax.n_rows;
+		Klist.zeros(udim*(horizon),xdim);
     };
   
   arma::mat K(double ti);
@@ -58,7 +58,7 @@ void lqr::calc_gains(const arma::mat& _A,const arma::mat& _B, double _tcurr){
 	arma::mat P;
    for(int i = horizon;i>0;i--){
 	   P = arma::reshape(Pflat,arma::size(Qf));
-	   Klist.submat(udim*i-udim,0,udim*i-1,xdim-1)=Rinv*B.t()*P;
+	   Klist.submat(udim*i-udim,0,udim*i-1,xdim-1)=Rinv*B.t()*P; 
 	   //Pflat = RK4_step<lqr,int>(this,Pflat,na,-1.0*dt);
 	   Pflat = Pflat - f(Pflat,i)*dt;
 	   }

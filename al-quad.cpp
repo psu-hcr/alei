@@ -3,7 +3,6 @@
 #include <fstream>
 #include<math.h>
 #include<armadillo>
-#include <chrono> 
 using namespace std;
 
 #include"src/quadrotor.hpp"
@@ -29,7 +28,7 @@ int main()
 	//arma::arma_rng::set_seed_random();
  	
 	ofstream myfile;
-    myfile.open ("test.csv");
+    myfile.open ("/home/zxl5344/test/src/alei/robotdata/test.csv");
  
 	double DT = 1./200.;
 	double T = 0.1;
@@ -97,12 +96,9 @@ while (syst1.tcurr<20.){
 	myfile<<arma::norm(basisobj.zx(measure)-xdk(systK.tcurr))-20.<<"\n";
 	syst1.step();
 	measure = syst1.get_measurement(syst1.Xcurr);//sample state
-	//auto begin = std::chrono::high_resolution_clock::now();// start time
 	systK.calc_K(measure,syst1.Ucurr);//add to data set and update Kx, Ku
-	//auto end = std::chrono::high_resolution_clock::now();// end time
-	//std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count() << "ns" << std::endl;//print time
 	lqrK.calc_gains(systK.Kx,systK.Ku,systK.tcurr);//update lqr gain
-	mu = lqrK.mu(systK.Xcurr,systK.tcurr);std::cout<<mu; //this is just to record mu
+	mu = lqrK.mu(systK.Xcurr,systK.tcurr);//this is just to record mu
 	syst1.Ucurr = ALpol.ustar_calc(); //compute ustar
 	if(syst1.Ucurr(0)!=syst1.Ucurr(0)){cout<<"returned a nan"<<endl;
 		syst1.Ucurr = unom(syst1.tcurr);
@@ -116,8 +112,7 @@ while (syst1.tcurr<20.){
     myfile.close();
  
  ofstream coeff;
- coeff.open("quad-koopman.csv");
+ coeff.open("/home/zxl5344/test/src/alei/robotdata/quad-koopman.csv");
  systK.K.save(coeff,arma::csv_ascii);
  coeff.close();
 }
-

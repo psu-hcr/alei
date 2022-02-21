@@ -28,8 +28,8 @@ class sac {
     arma::vec usat; usat.zeros(u.n_rows);
     for (int i = 0; i<u.n_rows; i++){
       if(u(i) > umax(i)) usat(i) = umax(i);
-        else if(u(i) < -umax(i)){ usat(i) = -umax(i);}
-          else usat(i) = u(i);};
+      else if(u(i) < -umax(i)){ usat(i) = -umax(i);}
+      else usat(i) = u(i);};
     return usat;}
   //incorporating ustar into u matrix and restricting the application interval
   inline arma::mat uInc(arma::vec &ut, double tau[]){
@@ -76,19 +76,19 @@ class sac {
 template <class system, class objective>
 void sac<system,objective>::SAC_calc(){ 
 
-  ulist.col(0) = sys->Ucurr;
-  arma::vec ustar;
-  ustar = arma::zeros<arma::vec>(size(sys->Ucurr));
+  ulist.col(0) = sys->Ucurr; 
+  arma::vec ustar = arma::zeros<arma::vec>(size(sys->Ucurr)); 
   double tau[2] = {0,0};
-  arma::uword tautemp;
+  arma::uword tautemp; 
   arma::mat xsol,rhosol;
   arma::mat utemp = ulist;
   arma::mat usched = arma::zeros<arma::mat>(umax.n_rows,T_index);
   arma::mat Jtau = arma::zeros<arma::mat>(1,T_index);
   double J1init,J1new,dJmin,alphad,lambda,J_QR,J_fisher,J_boundary; 
-  xsol = xforward(ulist);
-  J1init = cost->calc_cost(xsol,ulist);//must execute before rhoback for ergodic cost fxns
-  rhosol = rhoback(xsol, ulist);
+  std::cout<<"Jinit"<<std::endl;
+  xsol = xforward(ulist); 
+  J1init = cost->calc_cost(xsol,ulist); //std::cout<<"SAC4"<<std::endl;//must execute before rhoback for ergodic cost fxns
+  rhosol = rhoback(xsol, ulist); //std::cout<<"SAC5"<<std::endl;
   dJmin = 0.;//gamma*J1init
   alphad = gamma*J1init;
   arma::mat Lam;
@@ -119,10 +119,12 @@ void sac<system,objective>::SAC_calc(){
     tau[0] = sys->tcurr + (double)tautemp*sys->dt -(lambda/2);
     tau[1] = sys->tcurr + (double)tautemp*sys->dt+(lambda/2);
     utemp = uInc(ustar,tau);
+	std::cout<<"K"<<k<<std::endl;
     xsol = xforward(utemp);
     J1new = cost->calc_cost(xsol,utemp);
     k++;
   }
+  std::cout<<"deltaJ "<<J1new-J1init<<std::endl;
   ulist = utemp;
    
 return;}
@@ -132,9 +134,11 @@ template <class system, class objective>
 arma::mat sac<system,objective>::xforward(const arma::mat& u){
   arma::mat xsol = arma::zeros<arma::mat>(sys->Xcurr.n_rows,T_index);
   arma::vec x0 = sys->Xcurr;
+  std::cout<<x0<<std::endl;
   for(int i = 0; i<T_index;i++){
     xsol.col(i)=x0;
     x0 = RK4_step<system,const arma::vec&>(sys,x0,u.col(i),sys->dt);
+	std::cout<<x0<<std::endl;
   }    
 return xsol;}
 

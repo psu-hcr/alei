@@ -57,6 +57,24 @@ target_link_libraries(sac_koopquad ${ARMADILLO_LIBRARIES})
 add_executable(al_quad al-quad.cpp)
 target_link_libraries(al_quad ${ARMADILLO_LIBRARIES})
 
+add_executable(twolink errsac_KO_twolink.cpp)
+target_link_libraries(twolink ${ARMADILLO_LIBRARIES})
+
+add_executable(twolink_lqr_KO LQR_KO_twolink.cpp)
+target_link_libraries(twolink_lqr_KO ${ARMADILLO_LIBRARIES})
+
+add_executable(twolink_lqr LQR_twolink.cpp)
+target_link_libraries(twolink_lqr ${ARMADILLO_LIBRARIES})
+
+add_executable(KO_test KO_test.cpp)
+target_link_libraries(KO_test ${ARMADILLO_LIBRARIES})
+
+add_executable(KO_calc KO_calc.cpp)
+target_link_libraries(KO_calc ${ARMADILLO_LIBRARIES})
+
+add_executable(linear linear.cpp)
+target_link_libraries(linear ${ARMADILLO_LIBRARIES})
+
 	
 
 

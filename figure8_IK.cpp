@@ -35,7 +35,7 @@ class figureight{
 	
 	public:
 	double t_dJS = 0.;		//time counter for desire joint state
-	int counter = 10;		//counter for initial extra step
+	int counter = 2;		//counter for initial extra step
 	ros::NodeHandle *nh;
 	ros::Publisher pub;
 	ros::Subscriber sub;
@@ -140,9 +140,10 @@ class figureight{
 		if (counter){
 			
 			// extra initial movement for Koopman operator
-			Ucurr = {30, -60, 40, -40, 10, 10, 5};
+			//Ucurr = {0, -60, 40, -40, 10, 10, 5};
+			Ucurr = {0, 0, 0, 0, 0, 0, 0}; // debugging: move with only joint1
 			output.data.clear();
-			output.data = {30, -60, 40, -40, 10, 10, 5}; 
+			output.data.insert(output.data.end(), Ucurr.begin(), Ucurr.end()); 
 			counter--;
 		}
 		else {
@@ -222,6 +223,7 @@ int main(int argc, char **argv){
 	// define maximun input
 	arma::vec umax = {60, 70, 50, 50, 10, 10, 5}; 
 	//arma::vec umax = {500, 500, 500, 500, 500, 500, 500};
+	//arma::vec umax = {0, 0, 0, 0, 0, 0, 0};	// debugging: move with only joint1
 	
 	// define cost function gain
 	arma::mat R = 0.001*arma::eye(7,7);

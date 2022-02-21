@@ -52,6 +52,8 @@ pos7_max = max(pos7.min(), pos7.max(), key=abs)
 print("Max of joint")
 print(pos1_max, pos2_max, pos3_max, pos4_max, pos5_max, pos6_max, pos7_max)
 
+
+# error plot
 plt.figure(1)
 plt.title("Joint 1 error")
 plt.plot(time,poserr1,'r')
@@ -81,6 +83,7 @@ plt.title("Joint 7 error")
 plt.plot(time,poserr7,'r')
 
 """
+# desire joint state plot
 plt.figure(8)
 plt.title("desire Joint 1")
 plt.plot(time,djs1,'g^')
@@ -108,12 +111,15 @@ plt.plot(time,djs6,'g^')
 plt.figure(14)
 plt.title("desire Joint 7")
 plt.plot(time,djs7,'g^')
-
-
+"""
+"""
+# fisher cost plot
 plt.figure(15)
 plt.title("current fisher cost")
 plt.plot(time,fisher,'k')
-
+"""
+"""
+# velocity plot
 plt.figure(16)
 plt.title("vel 1")
 plt.plot(time,vel1,'b')
@@ -142,6 +148,8 @@ plt.figure(22)
 plt.title("vel 7")
 plt.plot(time,vel7,'b')
 """
+
+# input plot
 plt.figure(23)
 plt.title("u1")
 plt.plot(time,u1,'m')
@@ -170,7 +178,7 @@ plt.figure(29)
 plt.title("u7")
 plt.plot(time,u7,'m')
 
-"""
+# pose plot
 plt.figure(30)
 plt.title("pos1")
 plt.plot(time,pos1,'y')
@@ -198,5 +206,5 @@ plt.plot(time,pos6,'y')
 plt.figure(36)
 plt.title("pos7")
 plt.plot(time,pos7,'y')
-"""
+
 plt.show()

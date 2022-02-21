@@ -2,7 +2,7 @@ import numpy as np
 from numpy import genfromtxt
 import matplotlib.pyplot as plt
 
-data=genfromtxt('/home/zxl5344/IROS2022/src/iiwa_ros/koopman-op/quad-koopman.csv',delimiter=",",dtype=float)
+data=genfromtxt('/home/zxl5344/test/src/alei/robotdata/test.csv',delimiter=",",dtype=float)
 data = np.delete(data,0,0)
 tlist = data[0:-1,0]
 x1 = data[0:-1,1]
@@ -12,14 +12,14 @@ k1 = (data[0:-1,4])
 k2 = (data[0:-1,5])
 k3 = (data[0:-1,6])
 xK = (data[0:-1,10])
-'''
+
 plt.figure()
 #plt.plot(tlist,xK)#,'o',markersize=1)
 plt.plot(tlist,x1,'g')#o',markersize=1)
 plt.plot(tlist,x2,'r')
 plt.plot(tlist,x3,'k')
 plt.ylim(-15,15)
-'''
+
 plt.figure()
 plt.plot(tlist,xK)#,'o',markersize=1)
 plt.plot(tlist,k1,'g')#o',markersize=1)

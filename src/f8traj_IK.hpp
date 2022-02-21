@@ -43,7 +43,10 @@ class f8traj_IK{
 	arma::vec desire_jointstate(double t){
 		arma::vec djs = arma::zeros(xdim);
 		int current_step = int(t/dt) % total_step;
-		djs.subvec(0, 6) = djsmat.col(current_step);
+		//djs.subvec(0, 6) = djsmat.col(current_step);
+		djs.subvec(0, 6) = djsmat.col(current_step);	// debugging: move with only joint1
+		djs(1) = 0; djs(2) = 0; djs(3) = 0; djs(4) = 0; djs(5) = 0; djs(6) = 0;
+		//std::cout<<djs<<std::endl;
 		return djs;
 	}
 		

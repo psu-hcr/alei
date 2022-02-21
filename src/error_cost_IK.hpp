@@ -19,6 +19,7 @@ class errorcostIK {
 	double QR;
 	double fisher;
 	double boundary;
+	int NumOfJoint;
 	trajectory* traj;
     
     // initialization
@@ -29,7 +30,8 @@ class errorcostIK {
 	  // JoLimit: vector of Joint limit;
       Q=_Q; R=_R; sys=_sys; traj=_traj; Sigma = arma::diagmat(SigDiag);
 	  Joint_limit = _JoLimit;
-	  BoundaryDiag = arma::zeros<arma::vec>(sys->zfuncs->xdim);		
+	  BoundaryDiag = arma::zeros<arma::vec>(sys->zfuncs->xdim);
+	  NumOfJoint = Joint_limit.n_cols;
 	  QR = 0.0;
 	  fisher = 0.0;
 	  boundary = 0.0;
@@ -55,7 +57,7 @@ class errorcostIK {
 	 
 	 inline double boundary_cost (const arma::vec& x,const arma::vec& u,double ti){
 	 	//arma::vec xproj = sys->proj_func(x);
-		for (int i=0; i<7; i++){
+		for (int i=0; i<NumOfJoint; i++){
 			//BoundaryDiag(i) = pow((xproj(i)/(2*Joint_limit(i))), 8);
 			BoundaryDiag(i) = pow((x(i)/(2*Joint_limit(i))), 8);
 		}
@@ -69,7 +71,7 @@ class errorcostIK {
       arma::vec xd = traj->desire_jointstate(ti);
       arma::vec dfdk = sys->zfuncs->zx(x);
       double fishTopt = arma::as_scalar(dfdk.t()*Sigma*dfdk);
-	  for (int i=0; i<7; i++){
+	  for (int i=0; i<NumOfJoint; i++){
 			//BoundaryDiag(i) = pow((xproj(i)/(2*Joint_limit(i))), 8);
 			BoundaryDiag(i) = pow((x(i)/(2*Joint_limit(i))), 8);
 	  }
@@ -91,7 +93,7 @@ class errorcostIK {
 		fisher+=fisher_cost(x.col(i),u.col(i),sys->tcurr+(double)i*sys->dt);
 		boundary+=boundary_cost(x.col(i),u.col(i),sys->tcurr+(double)i*sys->dt);
         J1+=l(x.col(i),u.col(i),sys->tcurr+(double)i*sys->dt);
-        }
+      }
       return J1;
       }
 	 
