@@ -8,8 +8,8 @@ using namespace std;
 template <class system>
 class dklcost {
   system* sys;
-  double L1,L2,T;
-  int X1,X2;//index of relavant dimensions in xvector
+  double L1,L2,L3,T;
+  int X1,X2, X3;//index of relavant dimensions in xvector
   arma::uvec X_DKL;
   int K;//number of samples in the search domain
   arma::mat sigma; 
@@ -22,15 +22,15 @@ class dklcost {
     arma::mat R;
     int T_index,t_now=0;
     std::function<double(const arma::vec&)> phid;
-    dklcost(double _Q, arma::mat _R,int _K,arma::mat _sigma, int _X1,int _X2,std::function<double(const arma::vec&)> _phid,double _L1,double _L2,
-        double _T,system *_sys){
+    dklcost(double _Q, arma::mat _R,int _K,arma::mat _sigma, int _X1,int _X2, int _X3,std::function<double(const arma::vec&)> _phid,double _L1,double _L2, 
+	double _L3, double _T,system *_sys){
       Q=_Q; R=_R; sys=_sys; K = _K; phid = _phid; T=_T; // initialize with Q, R, sys, phid, and the domain
-      X1 = _X1; X2=_X2; L1 = _L1; L2 = _L2; X_DKL<<X1<<X2; sigma=_sigma;
+      X1 = _X1; X2=_X2; X3=_X3; L1 = _L1; L2 = _L2; L3 = _L3;X_DKL<<X1<<X2<<X3; sigma=_sigma;
       T_index = T/sys->dt;
       omp_set_dynamic(0); // get rid of dynamic stuff
       omp_set_num_threads(16); // set the number of threads
       xpast.set_size(sys->Xcurr.n_rows,300/sys->dt);//initialize xpast to hold up to fiveminutes of data
-      domainsamps.set_size(2,K);
+      domainsamps.set_size(3, K);
       qs_i.zeros(K);ps_i.set_size(K);
       resample(); //initialize the uniform samples over the domain and the probability of each sample
     };
@@ -47,6 +47,7 @@ template<class system> double dklcost<system>::l (const arma::vec& x,const arma:
       arma::mat Qtemp = arma::zeros<arma::mat>(xproj.n_rows,xproj.n_rows);
       Qtemp(X1,X1)= pow(xproj(X1)/(L1+(0.1*L1)),8);
       Qtemp(X2,X2) = pow(xproj(X2)/(L2+(0.1*L2)),8);
+	  Qtemp(X3,X3) = pow(xproj(X3)/(L3+(0.1*L3)),8);
       return arma::as_scalar((xproj.t()*Qtemp*xproj+u.t()*R*u)/2);
 }
 
@@ -54,8 +55,9 @@ template<class system> arma::vec dklcost<system>::dldx (const arma::vec&x, const
   arma::vec xproj = sys->proj_func(x);
   arma::vec a; a.zeros(xproj.n_rows);
   arma::mat Qtemp = arma::zeros<arma::mat>(xproj.n_rows,xproj.n_rows);
-  Qtemp(X1,X1)= pow(xproj(X1)/(L1+(0.1*L1)),8);
+  Qtemp(X1,X1) = pow(xproj(X1)/(L1+(0.1*L1)),8);
   Qtemp(X2,X2) = pow(xproj(X2)/(L2+(0.1*L2)),8);
+  Qtemp(X3,X3) = pow(xproj(X3)/(L3+(0.1*L3)),8);
   a=a+5*Qtemp*xproj;
   for(int n=0;n<ps_i.n_rows;n++){
     arma::vec s_x = domainsamps.col(n)-xproj.elem(X_DKL);
@@ -67,9 +69,9 @@ template<class system> double dklcost<system>::calc_cost (const arma::mat& x,con
   double J1 = 0.,Jtemp;
   arma::mat xjoined;
   if(t_now<=180){xjoined = arma::join_rows(xpast.cols(0,t_now),x);}
-  else{xjoined = arma::join_rows(xpast.cols(t_now-120,t_now),x);};
-  qs_disc(xjoined);
-  J1 = -arma::as_scalar(arma::sum(ps_i%arma::log(qs_i)));
+  else{xjoined = arma::join_rows(xpast.cols(t_now-120,t_now),x);};	//cout<<"test"<<endl;
+  qs_disc(xjoined);	//cout<<"qs_disc"<<endl;
+  J1 = -arma::as_scalar(arma::sum(ps_i%arma::log(qs_i)));	//cout<<"J1"<<endl;
   J1 = Q*J1;
   for (int i = 0; i<x.n_cols; i++){
     arma::vec xproj = sys->proj_func(x.col(i));
@@ -102,8 +104,8 @@ template<class system> void dklcost<system>::qs_disc(const arma::mat& x){//doubl
       
 template<class system> void dklcost<system>::resample(){
   //Choose K samples over the domain [[-L1,L1],[-L2,L2]]
-  arma::vec domainsize = {2.*L1,2.*L2};//{2*L1,2*L2};
-  domainsamps=arma::diagmat(domainsize)*arma::randu<arma::mat>(2,K);//generate uniform random samples from 0 to 2*L
+  arma::vec domainsize = {2.*L1, 2.*L2, 2.*L3};//{2*L1,2*L2};
+  domainsamps=arma::diagmat(domainsize)*arma::randu<arma::mat>(3,K);//generate uniform random samples from 0 to 2*L
   domainsamps.each_col() -= (0.5*domainsize);//shift samples to go from -L to L
   #pragma omp parallel for
   for(int n=0;n<ps_i.n_rows;n++){

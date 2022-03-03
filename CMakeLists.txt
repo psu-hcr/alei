@@ -50,6 +50,24 @@ target_link_libraries(f8IK
 	${ARMADILLO_LIBRARIES}
 	${catkin_LIBRARIES}
 	${std_msgs_LIBRARIES})
+	
+add_executable(f8IK_pos figure8_IK_pos.cpp)
+target_link_libraries(f8IK_pos
+	${ARMADILLO_LIBRARIES}
+	${catkin_LIBRARIES}
+	${std_msgs_LIBRARIES})
+
+add_executable(dot_dklsac dklsac_dot.cpp)
+target_link_libraries(dot_dklsac
+	${ARMADILLO_LIBRARIES}
+	${catkin_LIBRARIES}
+	${std_msgs_LIBRARIES})
+	
+add_executable(IK_pos IK_pos.cpp)
+target_link_libraries(IK_pos
+	${ARMADILLO_LIBRARIES}
+	${catkin_LIBRARIES}
+	${std_msgs_LIBRARIES})
 
 add_executable(sac_koopquad errsac_koopquad.cpp)
 target_link_libraries(sac_koopquad ${ARMADILLO_LIBRARIES})

@@ -39,7 +39,7 @@ KoopSys<basis>::KoopSys (double _dt, basis *_zfuncs){
     A = arma::zeros(zfuncs->zdim,zfuncs->zdim);
     G = arma::zeros(zfuncs->zdim,zfuncs->zdim);
     K = arma::ones<arma::mat>(zfuncs->zdim,zfuncs->zdim);
-	std::cout<<K<<std::endl;
+	//std::cout<<K<<std::endl;
     //Kx = arma::eye(zfuncs->xdim,zfuncs->xdim);
     //Ku = arma::eye(zfuncs->udim,zfuncs->udim);
     
