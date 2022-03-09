@@ -163,10 +163,10 @@ class figureight{
 		}
 		else{
 			(*myfile)<<sys1Pointer->Xcurr(0)<<","<<sys1Pointer->Xcurr(2)<<","<<sys1Pointer->Xcurr(4)<<",";
-			/*arma::vec dot_curr = Jointstate2traj(pos) - shift;		//cout<<"sys1Pointer->Xcurr"<<endl;
+			arma::vec dot_curr = Jointstate2traj(pos) - shift;		//cout<<"sys1Pointer->Xcurr"<<endl;
 			sys1Pointer->Xcurr(0) = dot_curr(0);
 			sys1Pointer->Xcurr(2) = dot_curr(2);
-			sys1Pointer->Xcurr(4) = dot_curr(4);*/
+			sys1Pointer->Xcurr(4) = dot_curr(4);
 			(*myfile)<<sys1Pointer->Xcurr(0)<<","<<sys1Pointer->Xcurr(2)<<","<<sys1Pointer->Xcurr(4)<<",";
 			costPointer->xmemory(sys1Pointer->Xcurr);				//cout<<"costPointer->xmemory"<<endl;
 			sys1Pointer->step();													//cout<<"sys1Pointer->step()"<<endl;
@@ -184,11 +184,10 @@ class figureight{
 	void publishing(const ros::TimerEvent& event){
 		if (t_dJS< 1.0){
 			t_dJS += 0.002;
-			//dJS = {0.9, 0.80, 1.36, 1.07, -2.21, 2.04, 2.};
 			//dJS = {-0.37, 0.45, 0.96, -1.05, -0.37, 1.7, -2.};
 			//dJS = {-0.3, 0.4, 0.9, -1.0, -0.3, 1.5, -2.};
-			//dJS = {-0.2, 0.2, 0.2, -0.5, -0.3, 0.5, -1.};
-			dJS = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+			dJS = {-0.2, 0.2, 0.2, -0.5, -0.3, 0.5, -1.};
+			//dJS = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		}
 		output.data.clear(); 
 		output.data.insert(output.data.end(), dJS.begin(), dJS.end());
@@ -242,7 +241,6 @@ int main(int argc, char **argv){
 	ros::Timer timer = nh.createTimer(ros::Duration(DT), &figureight::calc, &feight);
 	
 	ros::spin();		//spin command
-	//spinner.spin();	//spin command for multithread
 	
 	// close the file
 	myfile.close();
