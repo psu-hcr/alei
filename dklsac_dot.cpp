@@ -50,7 +50,7 @@ int main(){
  
     arma::vec xwrap;
            
-    myfile<<"x,y,z,wx,wy,wz, w,\n";
+    myfile<<"time,x,y,z,wx,wy,wz, w,\n";
  
     while (syst1.tcurr<30.){
 		//double start_time = omp_get_wtime();
@@ -60,7 +60,7 @@ int main(){
 			cout<<"Time: "<<syst1.tcurr<<"\n"<<syst1.Xcurr<<"\n";
 		}
 		xwrap = syst1.proj_func(syst1.Xcurr); 
-		
+		myfile<<syst1.tcurr<<",";
 		// move sys to desire location
 		xwrap(0) = xwrap(0)+0.5;
 		xwrap(2) = xwrap(2)+0.1;

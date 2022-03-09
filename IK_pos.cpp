@@ -84,13 +84,13 @@ class figureight{
 			
 			//desire trajectory
 			arma::vec dpose = trajPointer->desire_traj(Jointstate_counter);	
-			desire_Pose.position.x = dpose[0];
-			desire_Pose.position.y = dpose[1];
-			desire_Pose.position.z = dpose[2];
-			desire_Pose.orientation.x = dpose[3];
-			desire_Pose.orientation.y = dpose[4];
-			desire_Pose.orientation.z = dpose[5];
-			desire_Pose.orientation.w = dpose[6];//std::cout<<desire_Pose<<std::endl;
+			desire_Pose.position.x = dpose[1];
+			desire_Pose.position.y = dpose[2];
+			desire_Pose.position.z = dpose[3];
+			desire_Pose.orientation.x = dpose[4];
+			desire_Pose.orientation.y = dpose[5];
+			desire_Pose.orientation.z = dpose[6];
+			desire_Pose.orientation.w = dpose[7];//std::cout<<desire_Pose<<std::endl;
 		
 			// Using IK client to solve desire joint state
 			srv.request.poses = {desire_Pose};		// {} is necessary here for geometry_msgs::Pose	
@@ -158,7 +158,7 @@ int main(int argc, char **argv){
 	feight.traj2Jointstate();		//std::cout<<"traj2Jointstate"<<std::endl;
 	std::cout<<"traj2Jointstate is completed"<<std::endl;
 	
-	// save the desire trajectory
+	// save the desire joint_states
 	feight.trajPointer->djsmat.save("/home/zxl5344/test/src/alei/robotdata/f8djs.csv", arma::csv_ascii);
 
 	// publish torque

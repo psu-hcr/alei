@@ -28,6 +28,7 @@ seed.data = [0., 0., 0., 0., 0., 0., 0.]
 resp = get_fk(joints=seed)
 sol_pose = resp.poses[0]
 print('seed', seed)
+print('sol_pose', sol_pose)
 
 
 

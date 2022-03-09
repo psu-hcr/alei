@@ -68,6 +68,12 @@ target_link_libraries(IK_pos
 	${ARMADILLO_LIBRARIES}
 	${catkin_LIBRARIES}
 	${std_msgs_LIBRARIES})
+	
+add_executable(IK_pos_cl IK_pos_cl.cpp)
+target_link_libraries(IK_pos_cl
+	${ARMADILLO_LIBRARIES}
+	${catkin_LIBRARIES}
+	${std_msgs_LIBRARIES})
 
 add_executable(sac_koopquad errsac_koopquad.cpp)
 target_link_libraries(sac_koopquad ${ARMADILLO_LIBRARIES})
