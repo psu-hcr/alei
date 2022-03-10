@@ -57,7 +57,7 @@ class data2pdf {
 			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
 			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// normalize phi

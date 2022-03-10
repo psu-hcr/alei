@@ -23,5 +23,7 @@ int main(){
 	double dL3 = 0.01;
 	data2pdf data2pdf(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3);
 	data2pdf.calcpdf();
-	data2pdf.phi.save("/home/zxl5344/test/src/alei/Sweeping data/phi.csv", arma::arma_ascii);
+	//cout<<data2pdf.phi(90, 113, 225)<<endl;
+	cout<<arma::accu(data2pdf.phi)<<endl;
+	//data2pdf.phi.save("/home/zxl5344/test/src/alei/Sweeping data/phi.csv", arma::arma_ascii);
 }
