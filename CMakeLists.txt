@@ -99,7 +99,8 @@ target_link_libraries(KO_calc ${ARMADILLO_LIBRARIES})
 add_executable(linear linear.cpp)
 target_link_libraries(linear ${ARMADILLO_LIBRARIES})
 
-	
+add_executable(data2pdf data2pdftest.cpp)
+target_link_libraries(data2pdf ${ARMADILLO_LIBRARIES})
 
 
 
