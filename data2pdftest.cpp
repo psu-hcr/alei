@@ -17,11 +17,11 @@ int main(){
 	Data3.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample3.csv"); 	
 	double L1 = 1;
 	double L2 = 1;
-	double L3 = 2;
+	double L3 = 1.5;
 	double dL1 = 0.01;
 	double dL2 = 0.01;
 	double dL3 = 0.01;
 	data2pdf data2pdf(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3);
 	data2pdf.calcpdf();
-	data2pdf.phi.save("/home/zxl5344/test/src/alei/Sweeping data/phi.csv", arma::csv_ascii);
+	data2pdf.phi.save("/home/zxl5344/test/src/alei/Sweeping data/phi.csv", arma::arma_ascii);
 }
