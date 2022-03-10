@@ -71,12 +71,12 @@ class data2pdf {
 		
 		return phi;
 	};
-	double readpdf(double _x, double _y, double _z){
-		// read pdf at point (_x, _y, _z)
+	double readpdf(arma::vec pos){
+		// read pdf at pos
 		
-		double x = _x + L1;
-		double y = _y + L2;
-		double z = _z + L3;
+		double x = pos(0) + L1;
+		double y = pos(1) + L2;
+		double z = pos(2) + L3;
 			
 		int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 		int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
