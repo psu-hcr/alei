@@ -48,4 +48,29 @@ int main(){
     arma::mat SIGMA = 0.01*arma::eye(3,3);	
     dklcost_pdf<dot_model, data2pdf> cost (q,R,100,SIGMA,0,2,4, &phid, L1,L2,L3,T,&syst1);	
     sac<dot_model, dklcost_pdf<dot_model, data2pdf>> sacsys (&syst1,&cost,0.,T,umax,unom);
+	
+	ofstream myfile;
+    myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdftest.csv");
+	
+	arma::vec xwrap;
+	myfile<<"time,x,y,z,wx,wy,wz, w,\n";
+	
+	while (syst1.tcurr<30.){
+		//double start_time = omp_get_wtime();
+		cost.xmemory(syst1.Xcurr);	//cout<<"cost.xmemory"<<endl;
+		//cout <<"resamp time: "<< 1000 * (omp_get_wtime() - start_time)<<endl;
+		if(fmod(syst1.tcurr,2)<syst1.dt){
+			cout<<"Time: "<<syst1.tcurr<<"\n"<<syst1.Xcurr<<"\n";
+		}
+		xwrap = syst1.proj_func(syst1.Xcurr); 
+		myfile<<syst1.tcurr<<",";
+		// move sys to desire location
+		myfile<<xwrap(0)<<","<<xwrap(2)<<","<<xwrap(4)<<",";
+		myfile<<1<<","<<0<<","<<0<<","<<0<<",";
+		myfile<<"\n";	
+		syst1.step();	//cout<<"syst1.step()"<<endl;
+		sacsys.SAC_calc();	//cout<<"sacsys.SAC_calc"<<endl;
+		syst1.Ucurr = sacsys.ulist.col(0); 	//cout<<"syst1.Ucurr"<<endl;
+		sacsys.unom_shift();  
+    } 
 }
