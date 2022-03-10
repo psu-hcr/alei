@@ -18,9 +18,9 @@ int main(){
 	double L1 = 1;
 	double L2 = 1;
 	double L3 = 1.5;
-	double dL1 = 0.01;
-	double dL2 = 0.01;
-	double dL3 = 0.01;
+	double dL1 = 0.005;
+	double dL2 = 0.005;
+	double dL3 = 0.005;
 	data2pdf data2pdf(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3);
 	data2pdf.calcpdf();
 	//cout<<data2pdf.phi(90, 113, 225)<<endl;
