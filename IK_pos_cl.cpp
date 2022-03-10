@@ -169,7 +169,7 @@ class figureight{
 			sys1Pointer->Xcurr(4) = dot_curr(4);
 			(*myfile)<<sys1Pointer->Xcurr(0)<<","<<sys1Pointer->Xcurr(2)<<","<<sys1Pointer->Xcurr(4)<<",";
 			costPointer->xmemory(sys1Pointer->Xcurr);				//cout<<"costPointer->xmemory"<<endl;
-			sys1Pointer->step();													//cout<<"sys1Pointer->step()"<<endl;
+			sys1Pointer->step();													//cout<<"sys1Pointer->step()"<<endl;		
 			sacPointer->SAC_calc();											//cout<<"sacPointer->SAC_calc();"<<endl;
 			sys1Pointer->Ucurr = sacPointer->ulist.col(0); 	
 			sacPointer->unom_shift();
