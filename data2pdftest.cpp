@@ -21,5 +21,6 @@ int main(){
 	double dL1 = 0.01;
 	double dL2 = 0.01;
 	double dL3 = 0.01;
-	data2pdf(Data1, Data2, Data3, L1, L2, L3);
+	data2pdf data2pdf(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3);
+	data2pdf.calcpdf();
 }

@@ -6,6 +6,7 @@
 using namespace std;
 
 class data2pdf {
+	public:
 	arma::mat data1, data2, data3;
 	arma::cube phi;
 	int n_rows, n_cols, n_slices;
@@ -21,4 +22,24 @@ class data2pdf {
 		phi = arma::zeros( n_rows, n_cols, n_slices );
 	};
 	
+	arma::cube calcpdf(){
+		for (int i = 0; i < data1.n_rows; i++){
+			double x = data1(i, 1);
+			double y = data1(i, 2);
+			double z = data1(i, 3);
+			
+			// shift x y z if there are smaller than 0;
+			if(x<0) x+dL1;	
+			if(y<0) y+dL2;
+			if(z<0) z+dL3;
+			
+			int n_x = int(x/dL1);
+			int n_y = int(y/dL2);
+			int n_z = int(z/dL3);
+			phi(n_x, n_y, n_z)++;
+		};
+		return phi;
+	};
 };
+
+#endif
