@@ -1,12 +1,12 @@
-#ifndef DKLCOST_HPP
-#define DKLCOST_HPP
+#ifndef dklcost_pdf_HPP
+#define dklcost_pdf_HPP
 #include<armadillo>
 #include<math.h>
 #include<omp.h>
 using namespace std;
 
-template <class system, class phid>
-class dklcost {
+template <class system, class data2pdf>
+class dklcost_pdf {
   system* sys;
   double L1,L2,L3,T;
   int X1,X2, X3;//index of relavant dimensions in xvector
@@ -21,8 +21,8 @@ class dklcost {
     double Q;
     arma::mat R;
     int T_index,t_now=0;
-    phid* phid;
-    dklcost(double _Q, arma::mat _R,int _K,arma::mat _sigma, int _X1,int _X2, int _X3, phid *_phid,double _L1,double _L2, 
+    data2pdf* phid;
+    dklcost_pdf(double _Q, arma::mat _R,int _K,arma::mat _sigma, int _X1,int _X2, int _X3, data2pdf *_phid,double _L1,double _L2, 
 	double _L3, double _T,system *_sys){
       Q=_Q; R=_R; sys=_sys; K = _K; phid = _phid; T=_T; // initialize with Q, R, sys, phid, and the domain
       X1 = _X1; X2=_X2; X3=_X3; L1 = _L1; L2 = _L2; L3 = _L3;X_DKL<<X1<<X2<<X3; sigma=_sigma;
@@ -42,7 +42,7 @@ class dklcost {
     void qs_disc(const arma::mat& x);
 };/////////end main class def
 
-template<class system, class phid> double dklcost<system>::l (const arma::vec& x,const arma::vec& u,double ti){
+template<class system, class data2pdf> double dklcost_pdf<system, data2pdf>::l (const arma::vec& x,const arma::vec& u,double ti){
       arma::vec xproj = sys->proj_func(x);
       arma::mat Qtemp = arma::zeros<arma::mat>(xproj.n_rows,xproj.n_rows);
       Qtemp(X1,X1)= pow(xproj(X1)/(L1+(0.1*L1)),8);
@@ -51,7 +51,7 @@ template<class system, class phid> double dklcost<system>::l (const arma::vec& x
       return arma::as_scalar((xproj.t()*Qtemp*xproj+u.t()*R*u)/2);
 }
 
-template<class system, class phid> arma::vec dklcost<system>::dldx (const arma::vec&x, const arma::vec& u, double ti){
+template<class system, class data2pdf> arma::vec dklcost_pdf<system, data2pdf>::dldx (const arma::vec&x, const arma::vec& u, double ti){
   arma::vec xproj = sys->proj_func(x);
   arma::vec a; a.zeros(xproj.n_rows);
   arma::mat Qtemp = arma::zeros<arma::mat>(xproj.n_rows,xproj.n_rows);
@@ -65,7 +65,7 @@ template<class system, class phid> arma::vec dklcost<system>::dldx (const arma::
   };
   return a;}
 
-template<class system, class phid> double dklcost<system>::calc_cost (const arma::mat& x,const arma::mat& u){
+template<class system, class data2pdf> double dklcost_pdf<system, data2pdf>::calc_cost (const arma::mat& x,const arma::mat& u){
   double J1 = 0.,Jtemp;
   arma::mat xjoined;
   if(t_now<=180){xjoined = arma::join_rows(xpast.cols(0,t_now),x);}
@@ -79,7 +79,7 @@ template<class system, class phid> double dklcost<system>::calc_cost (const arma
   };
 return J1;}
 
-template<class system, class phid> void dklcost<system>::qs_disc(const arma::mat& x){//double start_time = omp_get_wtime();
+template<class system, class data2pdf> void dklcost_pdf<system, data2pdf>::qs_disc(const arma::mat& x){//double start_time = omp_get_wtime();
   #pragma omp parallel for
   for(int n=0;n<qs_i.n_rows;n++){
     qs_i(n) = 0.;
@@ -102,7 +102,7 @@ template<class system, class phid> void dklcost<system>::qs_disc(const arma::mat
   //if((omp_get_wtime() - start_time)>1./60.) cout <<"qi time: "<<(omp_get_wtime() - start_time)<<endl;
 }
       
-template<class system, class phid> void dklcost<system>::resample(){
+template<class system, class data2pdf> void dklcost_pdf<system, data2pdf>::resample(){
   //Choose K samples over the domain [[-L1,L1],[-L2,L2]]
   arma::vec domainsize = {2.*L1, 2.*L2, 2.*L3};//{2*L1,2*L2};
   domainsamps=arma::diagmat(domainsize)*arma::randu<arma::mat>(3,K);//generate uniform random samples from 0 to 2*L
@@ -114,7 +114,7 @@ template<class system, class phid> void dklcost<system>::resample(){
   ps_i=arma::normalise(ps_i,1);//normalise the discrete pdf over the samples
 }
 
-template<class system, class phid> void dklcost<system>::xmemory(const arma::vec& x){
+template<class system, class data2pdf> void dklcost_pdf<system, data2pdf>::xmemory(const arma::vec& x){
   xpast.col(t_now)= x;
   t_now++;
   resample();
