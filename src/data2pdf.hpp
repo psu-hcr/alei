@@ -24,18 +24,14 @@ class data2pdf {
 	
 	arma::cube calcpdf(){
 		for (int i = 0; i < data1.n_rows; i++){
-			double x = data1(i, 1);
-			double y = data1(i, 2);
-			double z = data1(i, 3);
+			// shift x y z to center of phi;
+			double x = data1(i, 1) + L1;
+			double y = data1(i, 2) + L2;
+			double z = data1(i, 3) + L3;
 			
-			// shift x y z if there are smaller than 0;
-			if(x<0) x+dL1;	
-			if(y<0) y+dL2;
-			if(z<0) z+dL3;
-			
-			int n_x = int(x/dL1);
-			int n_y = int(y/dL2);
-			int n_z = int(z/dL3);
+			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
 			phi(n_x, n_y, n_z)++;
 		};
 		return phi;
