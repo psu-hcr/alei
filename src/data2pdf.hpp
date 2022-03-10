@@ -23,6 +23,7 @@ class data2pdf {
 	};
 	
 	arma::cube calcpdf(){
+		// add data 1 data
 		for (int i = 0; i < data1.n_rows; i++){
 			// shift x y z to center of phi;
 			double x = data1(i, 1) + L1;
@@ -34,6 +35,34 @@ class data2pdf {
 			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
 			phi(n_x, n_y, n_z)++;
 		};
+		
+		for (int i = 0; i < data2.n_rows; i++){
+			// shift x y z to center of phi;
+			double x = data2(i, 1) + L1;
+			double y = data2(i, 2) + L2;
+			double z = data2(i, 3) + L3;
+			
+			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;
+		};
+		
+		for (int i = 0; i < data3.n_rows; i++){
+			// shift x y z to center of phi;
+			double x = data3(i, 1) + L1;
+			double y = data3(i, 2) + L2;
+			double z = data3(i, 3) + L3;
+			
+			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;
+		};
+		
+		// normalize phi
+		phi = phi/(data1.n_rows+data2.n_rows+data3.n_rows);
+		
 		return phi;
 	};
 };
