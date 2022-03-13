@@ -40,11 +40,17 @@ class figureight{
 	ros::Publisher pub;
 	ros::Subscriber sub;
 	ros::ServiceClient client;
+	ros::ServiceClient clientFK;
 	iiwa_tools::GetIK srv;
+	iiwa_tools::GetFK srvFK;
 	geometry_msgs::Pose desire_Pose;
+	geometry_msgs::Pose current_Pose;
 	std_msgs::Float64MultiArray seed1;
 	std_msgs::Float64MultiArray output;
+	std_msgs::Float64MultiArray current_state;
 	arma::vec dJS = {0., 0., 0., 0., 0., 0., 0.};
+	arma::vec Pose = {0.5, 0, 0.1, 0, 0.7, 0};
+	arma::vec shift = {0.5, 0, 0.3, 0, 0.7, 0};
 	arma::vec pos;
 	arma::vec vel;
 	arma::vec Xcurr;
@@ -63,19 +69,45 @@ class figureight{
 		seed1.layout.dim[0].size = 1;
 		seed1.layout.dim[1].size = 7;
 		seed1.data = {0.33, 0.59, 0.5, -0.68, 2.85, 1.7, -2.};		// seed for IK solver
+		current_state.layout.dim.push_back(std_msgs::MultiArrayDimension());		// setup dim(0)
+		current_state.layout.dim.push_back(std_msgs::MultiArrayDimension());		// setup dim(1)
+		current_state.layout.dim[0].size = 1;
+		current_state.layout.dim[1].size = 7;
+		current_state.data = {0., 0., 0., 0., 0., 0., 0.};		// robot state for FK solver
 		output.layout.dim.push_back(std_msgs::MultiArrayDimension());	//setup dim(0)
 		output.layout.dim[0].size = 7;
 		output.data = {0., 0., 0., 0., 0., 0., 0.};
 		client = nh->serviceClient<iiwa_tools::GetIK>("/iiwa/iiwa_ik_server");
+		clientFK = nh->serviceClient<iiwa_tools::GetFK>("/iiwa/iiwa_fk_server");
 		pub = nh->advertise<std_msgs::Float64MultiArray>("/iiwa/PositionController/command",10);
 		sub = nh->subscribe("/iiwa/joint_states", 1000, &figureight::chatterCallback, this);
 		
 		// output data info to excel
-		(*myfile)<<"joint state 1, joint state 2, joint state 3, joint state 4, joint state 5, joint state 6, joint state 7,";
-		(*myfile)<<"DJS 1, DJS 2, DJS 3, DJS 4, DJS 5, DJS 6, DJS 7,";
+		//(*myfile)<<"joint state 1, joint state 2, joint state 3, joint state 4, joint state 5, joint state 6, joint state 7,";
+		//(*myfile)<<"DJS 1, DJS 2, DJS 3, DJS 4, DJS 5, DJS 6, DJS 7,";
+		(*myfile)<<"x,y,z,";
 		(*myfile)<<"\n";
 		
 	}; 
+	
+	arma::vec Jointstate2traj(arma::vec measure){
+		// Using FK client to convert joint_states into pose
+		current_state.data.clear(); 
+		current_state.data.insert(current_state.data.end(), measure.begin(), measure.end());
+		
+		srvFK.request.joints = current_state;		
+		clientFK.waitForExistence();		//Wait for client existence
+		if(clientFK.call(srvFK)){					//Call the FK service 
+			current_Pose = srvFK.response.poses[0];
+		}
+		else{
+			std::cout<<"Error in FK solver"<<std::endl;
+		};
+		Pose[0] = current_Pose.position.x;
+		Pose[2] = current_Pose.position.y;
+		Pose[4] = current_Pose.position.z;
+		return Pose;
+	}
 	
 	void traj2Jointstate(){
 		int Jointstate_counter = 1;
@@ -115,18 +147,14 @@ class figureight{
 		//std::cout<<jointState;
 		pos = jointState.position;
 		vel = jointState.velocity;
-		for (int i=0; i<7; i++){
-			(*myfile)<<pos(i)<<",";
-		}
-		for (int i=0; i<7; i++){
-			(*myfile)<<Ucurr(i)<<",";
-		}
-		(*myfile)<<"\n";
 	};
 	
 	void publishing(const ros::TimerEvent& event){
 		Ucurr = trajPointer->desire_jointstate(t_dJS);
 		t_dJS = t_dJS + 0.002;
+		arma::vec dot_curr = Jointstate2traj(pos) - shift;	
+		(*myfile)<<dot_curr(0)<<","<<dot_curr(2)<<","<<dot_curr(4)<<",";
+		(*myfile)<<"\n";
 		output.data.clear(); 
 		output.data.insert(output.data.end(), Ucurr.begin(), Ucurr.end());
 		pub.publish(output);
