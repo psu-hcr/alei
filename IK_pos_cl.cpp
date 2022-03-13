@@ -106,6 +106,7 @@ class figureight{
 		(*myfile)<<"x_sim, y_sim, z_sim,";
 		(*myfile)<<"x, y, z,";
 		(*myfile)<<"DJS 1, DJS 2, DJS 3, DJS 4, DJS 5, DJS 6, DJS 7,";
+		(*myfile)<<"JS 1, JS 2, JS 3, JS 4, JS 5, JS 6, JS 7,";
 		(*myfile)<<"\n";
 		
 	}; 
@@ -177,6 +178,9 @@ class figureight{
 			for (int i=0; i<7; i++){
 				(*myfile)<<dJS(i)<<",";
 			}
+			for (int i=0; i<7; i++){
+				(*myfile)<<pos(i)<<",";
+			}
 			(*myfile)<<"\n";
 		}
 	}
@@ -186,8 +190,8 @@ class figureight{
 			t_dJS += 0.002;
 			//dJS = {-0.37, 0.45, 0.96, -1.05, -0.37, 1.7, -2.};
 			//dJS = {-0.3, 0.4, 0.9, -1.0, -0.3, 1.5, -2.};
-			//dJS = {-0.2, 0.2, 0.3, -0.5, -0.3, 0.5, -1.};
-			dJS = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+			dJS = {-0.2, 0.2, 0.3, -0.5, -0.3, 0.5, -1.};
+			//dJS = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		}
 		output.data.clear(); 
 		output.data.insert(output.data.end(), dJS.begin(), dJS.end());
