@@ -63,7 +63,7 @@ int main(){
 		myfile<<syst1.tcurr<<",";
 		// move sys to desire location
 		xwrap(0) = xwrap(0)+0.5;
-		xwrap(2) = xwrap(2)+0.1;
+		xwrap(2) = xwrap(2)+0.3;
 		xwrap(4) = xwrap(4)+0.7;
 		myfile<<xwrap(0)<<","<<xwrap(2)<<","<<xwrap(4)<<",";
 		myfile<<1<<","<<0<<","<<0<<","<<0<<",";
