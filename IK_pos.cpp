@@ -62,7 +62,7 @@ class figureight{
 		seed1.layout.dim.push_back(std_msgs::MultiArrayDimension());	//setup dim(1)
 		seed1.layout.dim[0].size = 1;
 		seed1.layout.dim[1].size = 7;
-		seed1.data = {-0.162, 0.70, 0.07, -0.67, 0.10, 1.59, 0.};		// seed for IK solver
+		seed1.data = {0.33, 0.59, 0.5, -0.68, 2.85, 1.7, -2.};		// seed for IK solver
 		output.layout.dim.push_back(std_msgs::MultiArrayDimension());	//setup dim(0)
 		output.layout.dim[0].size = 7;
 		output.data = {0., 0., 0., 0., 0., 0., 0.};

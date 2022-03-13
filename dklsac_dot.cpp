@@ -52,7 +52,7 @@ int main(){
            
     myfile<<"time,x,y,z,wx,wy,wz, w,\n";
  
-    while (syst1.tcurr<30.){
+    while (syst1.tcurr<20.){
 		//double start_time = omp_get_wtime();
 		cost.xmemory(syst1.Xcurr);	//cout<<"cost.xmemory"<<endl;
 		//cout <<"resamp time: "<< 1000 * (omp_get_wtime() - start_time)<<endl;
