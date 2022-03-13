@@ -87,7 +87,7 @@ class figureight{
 		seed1.layout.dim.push_back(std_msgs::MultiArrayDimension());	// setup dim(1)
 		seed1.layout.dim[0].size = 1;
 		seed1.layout.dim[1].size = 7;
-		seed1.data = {0.33, 0.59, 0.5, -0.68, 2.85, 1.96, -2.3};		// seed for IK solver pos (0.5, 0.3, 0.7)
+		seed1.data = {0.85, 0.65, -0.85, -0.74, 0.5, 1.88, -2.8};		// seed for IK solver pos (0.5, 0.3, 0.7)
 		//seed1.data = {-0.37, 0.45, 0.96, -1.05, -0.37, 1.7, -2.};		// seed for IK solver pos (0.5, 0.1, 0.7)
 		//seed1.data = {-0.3, 0.4, 0.9, -1.0, -0.3, 1.5, -2.};
 		//seed1.data = {-0.2, 0.2, 0.2, -0.5, -0.3, 0.5, -1.};
@@ -167,10 +167,10 @@ class figureight{
 		else{
 			(*myfile)<<sys1Pointer->Xcurr(0)<<","<<sys1Pointer->Xcurr(2)<<","<<sys1Pointer->Xcurr(4)<<",";
 			arma::vec dot_curr = Jointstate2traj(pos) - shift;		//cout<<"sys1Pointer->Xcurr"<<endl;
+			(*myfile)<<dot_curr(0)<<","<<dot_curr(2)<<","<<dot_curr(4)<<",";
 			sys1Pointer->Xcurr(0) = dot_curr(0);
 			sys1Pointer->Xcurr(2) = dot_curr(2);
 			sys1Pointer->Xcurr(4) = dot_curr(4);
-			(*myfile)<<sys1Pointer->Xcurr(0)<<","<<sys1Pointer->Xcurr(2)<<","<<sys1Pointer->Xcurr(4)<<",";
 			costPointer->xmemory(sys1Pointer->Xcurr);				//cout<<"costPointer->xmemory"<<endl;
 			sys1Pointer->step();													//cout<<"sys1Pointer->step()"<<endl;		
 			sacPointer->SAC_calc();											//cout<<"sacPointer->SAC_calc();"<<endl;
@@ -191,7 +191,7 @@ class figureight{
 		if (t_dJS< 2.0){
 			t_dJS += 0.002;
 			//dJS = {-0.37, 0.45, 0.96, -1.05, -0.37, 1.7, -2.};
-			dJS = {0.3, 0.5, 0.5, -0.68, 1.85, -1.91, 0.65};
+			dJS = {0.6, 0.5, -0.6, -0.6, 0.5, 1.88, -2.8};
 			//dJS = {-0.3, 0.4, 0.9, -1.0, -0.3, 1.5, -2.};
 			//dJS = {-0.2, 0.2, 0.3, -0.5, -0.3, 0.5, -1.};
 			//dJS = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
