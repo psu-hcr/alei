@@ -18,9 +18,9 @@ class data2pdf {
 		data1 = _data1; data2 = _data2; data3 = _data3;	
 		L1 = _L1; L2 = _L2; L3 = _L3; 	// Boundary for PDF
 		dL1 = _dL1;  dL2 = _dL2; dL3 = _dL3;	// size of grid
-		n_rows = 2*int(L1/dL1);
-		n_cols = 2*int(L2/dL2);
-		n_slices = 2*int(L3/dL3);
+		n_rows = 2*int(L1/dL1);	cout<<"n_rows"<<n_rows<<endl;
+		n_cols = 2*int(L2/dL2);	cout<<"n_cols"<<n_cols<<endl;
+		n_slices = 2*int(L3/dL3);	cout<<"n_slices"<<n_slices<<endl;
 		phi = arma::zeros( n_rows, n_cols, n_slices );
 	};
 	
@@ -28,6 +28,7 @@ class data2pdf {
 		// calculate pdf based on input data
 		
 		// add data for datasheet 1
+		//cout<<"data1"<<endl;
 		for (int i = 0; i < data1.n_rows; i++){
 			// shift x y z off center
 			double x = data1(i, 1) + L1;
@@ -37,10 +38,11 @@ class data2pdf {
 			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
 			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 2
+		//cout<<"data2"<<endl;
 		for (int i = 0; i < data2.n_rows; i++){
 			// shift x y z off center
 			double x = data2(i, 1) + L1;
@@ -50,10 +52,11 @@ class data2pdf {
 			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
 			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 3
+		//cout<<"data3"<<endl;
 		for (int i = 0; i < data3.n_rows; i++){
 			// shift x y z off center
 			double x = data3(i, 1) + L1;

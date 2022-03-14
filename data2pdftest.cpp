@@ -22,19 +22,19 @@ int main(){
 	Data1.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample3.csv"); 	
-	double L1 = 1;
-	double L2 = 1;
-	double L3 = 1.5;
-	double dL1 = 0.005;
-	double dL2 = 0.005;
-	double dL3 = 0.005;
+	double L1 = 0.8;
+	double L2 = 0.5;
+	double L3 = 1.3;
+	double dL1 = 0.05;
+	double dL2 = 0.05;
+	double dL3 = 0.05;
 	data2pdf phid(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3);
 	phid.calcpdf();
 	//cout<<phid.phi(90, 113, 225)<<endl;
 	cout<<"sum of phi: "<<arma::accu(phid.phi)<<endl;
 	//phid.phi.save("/home/zxl5344/test/src/alei/Sweeping data/phi.csv", arma::arma_ascii);
-	arma::vec pos = {0.609, -0.029,  0.793};
-	cout<<"read phi at(0.609, -0.029,  0.793): "<<phid.readpdf(pos)<<endl;
+	arma::vec pos = {0., 0.,  0.};
+	cout<<"read phi at(0., 0.,  0.): "<<phid.readpdf(pos)<<endl;
 	
 	dot_model syst1 (1./100.);
     syst1.Ucurr = unom(0); 
@@ -55,7 +55,7 @@ int main(){
 	arma::vec xwrap;
 	myfile<<"time,x,y,z,wx,wy,wz, w,\n";
 	
-	while (syst1.tcurr<30.){
+	while (syst1.tcurr<100.){
 		//double start_time = omp_get_wtime();
 		cost.xmemory(syst1.Xcurr);	//cout<<"cost.xmemory"<<endl;
 		//cout <<"resamp time: "<< 1000 * (omp_get_wtime() - start_time)<<endl;
