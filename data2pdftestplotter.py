@@ -35,8 +35,13 @@ z3 = data3[:, 3]
 fig = plt.figure()
 ax = plt.axes(projection='3d')
 ax.plot3D(x,y,z, 'r')
+"""
 ax.plot3D(x1,y1,z1, 'b')
 ax.plot3D(x2,y2,z2, 'b')
 ax.plot3D(x3,y3,z3, 'b')
+"""
+
+ax.plot3D([0],[0],[0], 'b',markersize=20)
+
 plt.show()
 

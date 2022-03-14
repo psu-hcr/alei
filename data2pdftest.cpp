@@ -19,15 +19,30 @@ arma::vec unom(double t){
 
 int main(){ 
 	arma::mat Data1, Data2, Data3;
+	/*
 	Data1.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample3.csv"); 	
+	*/
+	Data1.load("/home/zxl5344/test/src/alei/Sweeping data/dot1.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Sweeping data/dot1.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Sweeping data/dot1.csv"); 
+	/*
 	double L1 = 0.8;
 	double L2 = 0.5;
 	double L3 = 1.3;
 	double dL1 = 0.05;
 	double dL2 = 0.05;
 	double dL3 = 0.05;
+	*/
+	
+	double L1 = 0.5;
+	double L2 = 0.5;
+	double L3 = 0.5;
+	double dL1 = 0.01;
+	double dL2 = 0.01;
+	double dL3 = 0.01;
+	
 	data2pdf phid(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3);
 	phid.calcpdf();
 	//cout<<phid.phi(90, 113, 225)<<endl;
@@ -55,7 +70,7 @@ int main(){
 	arma::vec xwrap;
 	myfile<<"time,x,y,z,wx,wy,wz, w,\n";
 	
-	while (syst1.tcurr<100.){
+	while (syst1.tcurr<30.){
 		//double start_time = omp_get_wtime();
 		cost.xmemory(syst1.Xcurr);	//cout<<"cost.xmemory"<<endl;
 		//cout <<"resamp time: "<< 1000 * (omp_get_wtime() - start_time)<<endl;

@@ -35,10 +35,10 @@ class data2pdf {
 			double y = data1(i, 2) + L2;
 			double z = data1(i, 3) + L3;
 			
-			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 2
@@ -49,10 +49,10 @@ class data2pdf {
 			double y = data2(i, 2) + L2;
 			double z = data2(i, 3) + L3;
 			
-			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 3
@@ -63,10 +63,10 @@ class data2pdf {
 			double y = data3(i, 2) + L2;
 			double z = data3(i, 3) + L3;
 			
-			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// normalize phi
