@@ -17,7 +17,7 @@ arma::vec unom(double t){
 		
 int main(){   
 	ofstream myfile;
-    myfile.open ("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1.csv");
+    myfile.open ("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv");
     dot_model syst1 (1./100.);
     syst1.Ucurr = unom(0); 
     random_device rd; mt19937 eng(rd());
