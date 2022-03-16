@@ -23,8 +23,8 @@ int main(){
     random_device rd; mt19937 eng(rd());
     uniform_real_distribution<> distr(-0.4,0.4);
 	uniform_real_distribution<> noise_distr(-0.01,0.01);
-    //syst1.Xcurr = {-0.2,0.0,0.1,0.0};
-    syst1.Xcurr = {distr(eng),distr(eng),distr(eng),distr(eng),distr(eng),distr(eng)};//must be initialized before instantiating cost
+    syst1.Xcurr = {-0.2,0.0,0.1,0.0, 0.1, 0.0};
+    //syst1.Xcurr = {distr(eng),distr(eng),distr(eng),distr(eng),distr(eng),distr(eng)};//must be initialized before instantiating cost
     arma::mat R = 0.001*arma::eye(3,3); double q=1.;
     arma::vec umax = {5.0, 5.0, 5.0};
  
