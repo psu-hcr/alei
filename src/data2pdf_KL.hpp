@@ -101,7 +101,7 @@ class data2pdf_KL {
 		return phi(n_x, n_y, n_z);
 	};
 	
-	arma::cube pdf_t(int col){
+	arma::cube pdf_t(int start, int col){
 		// calculate pdf till col
 		
 		// reinitialze phi_t
@@ -113,7 +113,7 @@ class data2pdf_KL {
 		
 		// add data for datasheet 1
 		//cout<<"data1"<<endl;
-		for (int i = 0; i < col; i++){
+		for (int i = start; i < col; i++){
 			// shift x y z off center
 			double x = data1(i, 1) + L1 - new_origin(0);
 			double y = data1(i, 2) + L2 - new_origin(1);
@@ -127,7 +127,7 @@ class data2pdf_KL {
 		
 		// add data for datasheet 2
 		//cout<<"data2"<<endl;
-		for (int i = 0; i < col; i++){
+		for (int i = start; i < col; i++){
 			// shift x y z off center
 			double x = data2(i, 1) + L1 - new_origin(0);
 			double y = data2(i, 2) + L2 - new_origin(1);
@@ -141,7 +141,7 @@ class data2pdf_KL {
 		
 		// add data for datasheet 3
 		//cout<<"data3"<<endl;
-		for (int i = 0; i < col; i++){
+		for (int i = start; i < col; i++){
 			// shift x y z off center
 			double x = data3(i, 1) + L1 - new_origin(0);
 			double y = data3(i, 2) + L2 - new_origin(1);

@@ -26,13 +26,13 @@ cost = np.delete(cost,0,0)
 row = cost[:, 0]
 KL = cost[:, 1]
 
-
+"""
 fig = plt.figure()
 ax1 = plt.axes(projection='3d')
 ax1.plot3D(x1,y1,z1, 'b')
 ax1.plot3D(x2,y2,z2, 'r')
 ax1.plot3D(x3,y3,z3, 'y')
-
+"""
 plt.figure()
 plt.plot(row,KL, 'r')
 

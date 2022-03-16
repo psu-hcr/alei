@@ -46,19 +46,22 @@ int main(){
 	arma::cube Q = phid.calcpdf();
 	
 	// define window size
-	int w = 100;
+	int w = 30;
 	
-	int i = w;
+	int i = 0;
 	double previous_cost = 0;
-	arma::cube prev_P = arma::zeros(size(Q));
+	//arma::cube prev_P = arma::zeros(size(Q));
+	arma::cube prev_P = phid.pdf_t(i, i+w);
 	
 	// calculate PDF
 	while(i < Data1.n_rows){
-		arma::cube P = phid.pdf_t(i);
+		//arma::cube P = phid.pdf_t(i, i+w);
+		arma::cube P = phid.pdf_t(0, i+w);
 		//double cost = phid.KL(P,Q);
 		double cost = phid.KL(prev_P,P);
-		cout<<cost<<endl;
-		myfile<<i<<","<<cost<<",";
+		double result = -log(cost);
+		cout<<result<<endl;
+		myfile<<i<<","<<result<<",";
 		
 		previous_cost = cost;
 		prev_P = P;

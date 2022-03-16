@@ -17,7 +17,7 @@ arma::vec unom(double t){
 		
 int main(){   
 	ofstream myfile;
-    myfile.open ("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv");
+    myfile.open ("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1.csv");
     dot_model syst1 (1./100.);
     syst1.Ucurr = unom(0); 
     random_device rd; mt19937 eng(rd());
@@ -38,7 +38,7 @@ int main(){
 	
     //myfile<<"time,x,y,z,wx,wy,wz, w,\n";
  
-    while (syst1.tcurr<30.){
+    while (syst1.tcurr<60.){
 		if(fmod(syst1.tcurr,2)<syst1.dt){
 			cout<<"Time: "<<syst1.tcurr<<"\n"<<syst1.Xcurr<<"\n";
 		}
@@ -73,6 +73,24 @@ int main(){
 			goal = {2.0, 0.0, -1.0, 0.0, -1.0, 0.0};
 		}
 		else if (syst1.tcurr<30.){
+			goal = {-1.0, 0.0, 1.0, 0.0, -1.0, 0.0};
+		}
+		else if(syst1.tcurr<35.){
+			goal = {1.0, 0.0, 1.0, 0.0, 1.0, 0.0};
+		}
+		else if (syst1.tcurr<40.){
+			goal = {2.0, 0.0, -1.0, 0.0, -1.0, 0.0};
+		}
+		else if (syst1.tcurr<45.){
+			goal = {-1.0, 0.0, 1.0, 0.0, -1.0, 0.0};
+		}
+		else if(syst1.tcurr<50.){
+			goal = {1.0, 0.0, 1.0, 0.0, 1.0, 0.0};
+		}
+		else if (syst1.tcurr<55.){
+			goal = {2.0, 0.0, -1.0, 0.0, -1.0, 0.0};
+		}
+		else if (syst1.tcurr<60.){
 			goal = {-1.0, 0.0, 1.0, 0.0, -1.0, 0.0};
 		}
     } 
