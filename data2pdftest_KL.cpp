@@ -33,11 +33,22 @@ int main(){
 	arma::vec new_origin = {0, 0, 0};
 	
 	data2pdf_KL phid(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
-	phid.calcpdf();
+	arma::cube Q = phid.calcpdf();
 	//cout<<phid.phi(90, 113, 225)<<endl;
 	cout<<"sum of phi: "<<arma::accu(phid.phi)<<endl;
 	//phid.phi.save("/home/zxl5344/test/src/alei/Sweeping data/phi.csv", arma::arma_ascii);
-	arma::vec pos = {0., 0.,  0.};
+	arma::vec pos = {0.1, 0.1,  0.1};
 	cout<<"read phi at(0., 0.,  0.): "<<phid.readpdf(pos)<<endl;
+	
+	// define window size
+	int w = 10;
+	
+	// define a counter for while loop
+	int i = w;
+	while(i < Data1.n_rows){
+		arma::cube P = phid.pdf_t(i);
+		cout<<phid.KL(P,Q)<<endl;
+		i +=w;
+	}
 	
 }

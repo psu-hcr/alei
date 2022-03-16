@@ -36,46 +36,49 @@ class data2pdf_KL {
 		// add data for datasheet 1
 		//cout<<"data1"<<endl;
 		for (int i = 0; i < data1.n_rows; i++){
-			cout<<"data1_i"<<i<<endl;
+			//cout<<"data1_i"<<i<<endl;
+			
 			// shift x y z off center
 			double x = data1(i, 1) + L1 - new_origin(0);
 			double y = data1(i, 2) + L2 - new_origin(1);
 			double z = data1(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"data1n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"data1n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"data1n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	//cout<<"data1n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"data1n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"data1n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 2
 		//cout<<"data2"<<endl;
 		for (int i = 0; i < data2.n_rows; i++){
-			cout<<"data2_i"<<i<<endl;
+			//cout<<"data2_i"<<i<<endl;
+			
 			// shift x y z off center
 			double x = data2(i, 1) + L1 - new_origin(0);
 			double y = data2(i, 2) + L2 - new_origin(1);
 			double z = data2(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"data2n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"data2n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"data2n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	//cout<<"data2n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"data2n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"data2n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 3
 		//cout<<"data3"<<endl;
 		for (int i = 0; i < data3.n_rows; i++){
-			cout<<"data3_i"<<i<<endl;
+			//cout<<"data3_i"<<i<<endl;
+			
 			// shift x y z off center
 			double x = data3(i, 1) + L1 - new_origin(0);
 			double y = data3(i, 2) + L2 - new_origin(1);
 			double z = data3(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"data3n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"data3n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"data3n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	//cout<<"data3n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"data3n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"data3n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// normalize phi
@@ -157,8 +160,17 @@ class data2pdf_KL {
 	};
 	
 	double KL(arma::cube P, arma::cube Q){
+		
+		// add small number to P, Q to prevent sigular
+		P = P+0.0001;
+		Q = Q+0.0001;
+		
+		// Normalize P&Q
+		P = P/arma::accu(P);
+		Q = Q/arma::accu(Q);
+		
 		// calculate KL(P||Q)
-		return arma::accu(P % arma::log(P/Q));
+		return arma::accu(P%arma::log(P/Q));
 	}
 };
 
