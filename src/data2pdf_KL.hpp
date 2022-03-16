@@ -1,11 +1,13 @@
-#ifndef data2pdf_hpp
-#define data2pdf_hpp
+#ifndef data2pdf_KL_hpp
+#define data2pdf_KL_hpp
+#include <iostream>
 #include<armadillo>
 #include<math.h>
+#include <algorithm>
 
 using namespace std;
 
-class data2pdf {
+class data2pdf_KL {
 	public:
 	arma::mat data1, data2, data3;
 	arma::cube phi, phi_t;
@@ -13,7 +15,7 @@ class data2pdf {
 	int n_rows, n_cols, n_slices;
 	double L1, L2, L3;
 	double dL1, dL2, dL3;
-	data2pdf (arma::mat _data1, arma::mat _data2, arma::mat _data3, double _L1, double _L2, double _L3, double _dL1, double _dL2, double _dL3, arma::vec _origin){
+	data2pdf_KL (arma::mat _data1, arma::mat _data2, arma::mat _data3, double _L1, double _L2, double _L3, double _dL1, double _dL2, double _dL3, arma::vec _origin){
 		// this is a class convert data from 3 datasheets into one PDF wrt to _origin. 
 		// This class can calculate KL between two PDF 
 		
@@ -34,42 +36,45 @@ class data2pdf {
 		// add data for datasheet 1
 		//cout<<"data1"<<endl;
 		for (int i = 0; i < data1.n_rows; i++){
+			cout<<"data1_i"<<i<<endl;
 			// shift x y z off center
 			double x = data1(i, 1) + L1 - new_origin(0);
 			double y = data1(i, 2) + L2 - new_origin(1);
 			double z = data1(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
+			int n_x = int(x/dL1);	cout<<"data1n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	cout<<"data1n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	cout<<"data1n_z"<<n_z<<endl;
 			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 2
 		//cout<<"data2"<<endl;
 		for (int i = 0; i < data2.n_rows; i++){
+			cout<<"data2_i"<<i<<endl;
 			// shift x y z off center
 			double x = data2(i, 1) + L1 - new_origin(0);
 			double y = data2(i, 2) + L2 - new_origin(1);
 			double z = data2(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
+			int n_x = int(x/dL1);	cout<<"data2n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	cout<<"data2n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	cout<<"data2n_z"<<n_z<<endl;
 			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 3
 		//cout<<"data3"<<endl;
 		for (int i = 0; i < data3.n_rows; i++){
+			cout<<"data3_i"<<i<<endl;
 			// shift x y z off center
 			double x = data3(i, 1) + L1 - new_origin(0);
 			double y = data3(i, 2) + L2 - new_origin(1);
 			double z = data3(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
+			int n_x = int(x/dL1);	cout<<"data3n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	cout<<"data3n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	cout<<"data3n_z"<<n_z<<endl;
 			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
@@ -95,11 +100,17 @@ class data2pdf {
 	
 	arma::cube pdf_t(int col){
 		// calculate pdf till col
-		int finaltime = min({col, data1.n_rows, data2.n_rows, data3.n_rows})
+		
+		// reinitialze phi_t
+		phi_t = arma::zeros( n_rows, n_cols, n_slices );
+		
+		if(col > data1.n_rows) col = data1.n_rows;
+		if(col > data2.n_rows) col = data2.n_rows;
+		if(col > data3.n_rows) col = data3.n_rows;
 		
 		// add data for datasheet 1
 		//cout<<"data1"<<endl;
-		for (int i = 0; i < finaltime; i++){
+		for (int i = 0; i < col; i++){
 			// shift x y z off center
 			double x = data1(i, 1) + L1 - new_origin(0);
 			double y = data1(i, 2) + L2 - new_origin(1);
@@ -108,12 +119,12 @@ class data2pdf {
 			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
 			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			phi_t(n_x, n_y, n_z)++;	//cout<<"phi_t(n_x, n_y, n_z)"<<phi_t(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 2
 		//cout<<"data2"<<endl;
-		for (int i = 0; i < finaltime; i++){
+		for (int i = 0; i < col; i++){
 			// shift x y z off center
 			double x = data2(i, 1) + L1 - new_origin(0);
 			double y = data2(i, 2) + L2 - new_origin(1);
@@ -122,12 +133,12 @@ class data2pdf {
 			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
 			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			phi_t(n_x, n_y, n_z)++;	//cout<<"phi_t(n_x, n_y, n_z)"<<phi_t(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 3
 		//cout<<"data3"<<endl;
-		for (int i = 0; i < finaltime; i++){
+		for (int i = 0; i < col; i++){
 			// shift x y z off center
 			double x = data3(i, 1) + L1 - new_origin(0);
 			double y = data3(i, 2) + L2 - new_origin(1);
@@ -136,13 +147,13 @@ class data2pdf {
 			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
 			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			phi_t(n_x, n_y, n_z)++;	//cout<<"phi_t(n_x, n_y, n_z)"<<phi_t(n_x, n_y, n_z)<<endl;
 		};
 		
 		// normalize phi
-		phi = phi/(3*finaltime);
+		phi_t = phi_t/(3*col);
 		
-		return phi;
+		return phi_t;
 	};
 	
 	double KL(arma::cube P, arma::cube Q){

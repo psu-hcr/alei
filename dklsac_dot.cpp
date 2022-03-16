@@ -33,7 +33,7 @@ arma::vec unom(double t){
 
 int main(){   
 	ofstream myfile;
-    myfile.open ("/home/zxl5344/test/src/alei/robotdata/dklsac_dot.csv");
+    myfile.open ("/home/zxl5344/test/src/alei/Gaussian_traj/sample3.csv");
     dot_model syst1 (1./100.);
     syst1.Ucurr = unom(0); 
     random_device rd; mt19937 eng(rd());
@@ -52,9 +52,9 @@ int main(){
 	arma::vec shift = {0, 0, 0};
 	//arma::vec shift = {0.5, 0.3, 0.7}
 	
-    myfile<<"time,x,y,z,wx,wy,wz, w,\n";
+    //myfile<<"time,x,y,z,wx,wy,wz, w,\n";
  
-    while (syst1.tcurr<20.){
+    while (syst1.tcurr<30.){
 		//double start_time = omp_get_wtime();
 		cost.xmemory(syst1.Xcurr);	//cout<<"cost.xmemory"<<endl;
 		//cout <<"resamp time: "<< 1000 * (omp_get_wtime() - start_time)<<endl;

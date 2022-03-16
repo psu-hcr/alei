@@ -102,6 +102,9 @@ target_link_libraries(linear ${ARMADILLO_LIBRARIES})
 add_executable(data2pdf data2pdftest.cpp)
 target_link_libraries(data2pdf ${ARMADILLO_LIBRARIES})
 
+add_executable(data2pdf_KL data2pdftest_KL.cpp)
+target_link_libraries(data2pdf_KL ${ARMADILLO_LIBRARIES})
+
 
 
 
