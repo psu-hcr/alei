@@ -49,7 +49,9 @@ int main(){
     sac<dot_model,dklcost<dot_model>> sacsys (&syst1,&cost,0.,T,umax,unom);
  
     arma::vec xwrap;
-           
+	arma::vec shift = {0, 0, 0};
+	//arma::vec shift = {0.5, 0.3, 0.7}
+	
     myfile<<"time,x,y,z,wx,wy,wz, w,\n";
  
     while (syst1.tcurr<20.){
@@ -62,9 +64,9 @@ int main(){
 		xwrap = syst1.proj_func(syst1.Xcurr); 
 		myfile<<syst1.tcurr<<",";
 		// move sys to desire location
-		xwrap(0) = xwrap(0)+0.5;
-		xwrap(2) = xwrap(2)+0.3;
-		xwrap(4) = xwrap(4)+0.7;
+		xwrap(0) = xwrap(0)+shift(0);
+		xwrap(2) = xwrap(2)+shift(1);
+		xwrap(4) = xwrap(4)+shift(2);
 		myfile<<xwrap(0)<<","<<xwrap(2)<<","<<xwrap(4)<<",";
 		myfile<<1<<","<<0<<","<<0<<","<<0<<",";
 		myfile<<"\n";	
