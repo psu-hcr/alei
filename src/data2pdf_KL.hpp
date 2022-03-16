@@ -162,8 +162,8 @@ class data2pdf_KL {
 	double KL(arma::cube P, arma::cube Q){
 		
 		// add small number to P, Q to prevent sigular
-		P = P+0.0001;
-		Q = Q+0.0001;
+		P = P+0.00001;
+		Q = Q+0.00001;
 		
 		// Normalize P&Q
 		P = P/arma::accu(P);

@@ -32,6 +32,11 @@ int main(){
 	double dL3 = 0.05;
 	arma::vec new_origin = {0, 0, 0};
 	
+	ofstream myfile;
+	myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL.csv");
+	myfile<<"row, cost,";
+	myfile<<"\n";
+	
 	data2pdf_KL phid(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	arma::cube Q = phid.calcpdf();
 	//cout<<phid.phi(90, 113, 225)<<endl;
@@ -45,9 +50,15 @@ int main(){
 	
 	// define a counter for while loop
 	int i = w;
+	
+	// calculate PDF
 	while(i < Data1.n_rows){
 		arma::cube P = phid.pdf_t(i);
-		cout<<phid.KL(P,Q)<<endl;
+		double cost = phid.KL(P,Q);
+		cout<<cost<<endl;
+		myfile<<i<<","<<cost<<",";
+		
+		myfile<<"\n";
 		i +=w;
 	}
 	
