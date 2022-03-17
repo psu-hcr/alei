@@ -17,7 +17,7 @@ arma::vec unom(double t){
 		
 int main(){   
 	ofstream myfile;
-    myfile.open ("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1.csv");
+    myfile.open ("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv");
     dot_model syst1 (1./100.);
     syst1.Ucurr = unom(0); 
     random_device rd; mt19937 eng(rd());
@@ -53,6 +53,7 @@ int main(){
 		myfile<<"\n";	
 		syst1.step();	//cout<<"syst1.step()"<<endl;
 		arma::vec noise = {noise_distr(eng),noise_distr(eng),noise_distr(eng),noise_distr(eng),noise_distr(eng),noise_distr(eng)};
+		//arma::vec noise = {0.,0.,0.,0.,0.,0.};
 		syst1.Xcurr = syst1.Xcurr + noise;
 		syst1.Ucurr = -K*(syst1.Xcurr-goal);	//cout<<"syst1.Ucurr"<<endl;
 		

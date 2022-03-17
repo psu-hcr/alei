@@ -90,11 +90,13 @@ yellowUpper = np.array([U_Hy, U_Sy, U_Vy])
 r_peg = 0.01    #meter
 r_base = 0.021  #meter
 
+PegPosition = [[0], [0], [0]]
+BasePosition = [[0], [0], [0]]
+
 starttime=time.time()
 try:
   while True:
-    PegPosition = [[0], [0], [0]]
-    BasePosition = [[0], [0], [0]]
+    
 
     # Get frameset of color and depth
     frameset = pipe.wait_for_frames()
@@ -300,5 +302,5 @@ except KeyboardInterrupt:
 finally:
     pipe.stop()
     df = pd.DataFrame(data)
-    path = '/home/zxl5344/test/src/alei/CameraRecording.csv'
+    path = '/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv'
     df.to_csv(path, header=True, index=False)

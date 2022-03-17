@@ -20,14 +20,26 @@ arma::vec unom(double t){
 int main(){ 
 	arma::mat Data1, Data2, Data3;
 	/*
+	// gaussian traj data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/sample1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/sample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/sample3.csv"); 	
-	*/
 	
+	// 3point data without noise
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1_no_noise.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2_no_noise.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3_no_noise.csv"); 
+	
+	// 3point data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv"); 	
+	*/
+	
+	// Camera data
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
 	
 	double L1 = 2.5;
 	double L2 = 2.5;
@@ -35,7 +47,7 @@ int main(){
 	double dL1 = 0.05;
 	double dL2 = 0.05;
 	double dL3 = 0.05;
-	arma::vec new_origin = {0, 0, 0};
+	arma::vec new_origin = {0.08, 0.19, 0.94};
 	
 	ofstream myfile;
 	myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL.csv");
@@ -46,7 +58,7 @@ int main(){
 	arma::cube Q = phid.calcpdf();
 	
 	// define window size
-	int w = 30;
+	int w = 5;
 	
 	int i = 0;
 	double previous_cost = 0;
@@ -55,12 +67,12 @@ int main(){
 	
 	// calculate PDF
 	while(i < Data1.n_rows){
-		//arma::cube P = phid.pdf_t(i, i+w);
-		arma::cube P = phid.pdf_t(0, i+w);
+		arma::cube P = phid.pdf_t(i, i+w);	
+		//arma::cube P = phid.pdf_t(0, i+w);
 		//double cost = phid.KL(P,Q);
 		double cost = phid.KL(prev_P,P);
 		double result = -log(cost);
-		cout<<result<<endl;
+		//cout<<result<<endl;
 		myfile<<i<<","<<result<<",";
 		
 		previous_cost = cost;
