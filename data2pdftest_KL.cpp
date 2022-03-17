@@ -24,30 +24,31 @@ int main(){
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/sample1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/sample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/sample3.csv"); 	
-	
+	*/
+	/*
 	// 3point data without noise
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1_no_noise.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2_no_noise.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3_no_noise.csv"); 
 	*/
+	/*
 	// 3point data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv"); 	
-	
-	/*
-	// Camera data
-	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
-	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
-	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
 	*/
+	// Camera data
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
+	
 	double L1 = 2.5;
 	double L2 = 2.5;
 	double L3 = 2.5;
 	double dL1 = 0.05;
 	double dL2 = 0.05;
 	double dL3 = 0.05;
-	arma::vec new_origin = {0.08, 0.19, 0.94};
+	arma::vec new_origin = {0., 0., 0.};
 	
 	ofstream myfile;
 	myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL.csv");
@@ -74,6 +75,8 @@ int main(){
 		double result = cost;
 		//cout<<result<<endl;
 		myfile<<i<<","<<result<<",";
+		
+		if(cost-previous_cost > 12) cout<<"a new task at "<<i<<endl;
 		
 		previous_cost = cost;
 		prev_P = P;
