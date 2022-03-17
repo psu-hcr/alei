@@ -154,7 +154,8 @@ class data2pdf_KL {
 		};
 		
 		// normalize phi
-		phi_t = phi_t/(3*col);
+		phi_t = phi_t/(3*(col-start));
+		
 		
 		return phi_t;
 	};
@@ -162,8 +163,8 @@ class data2pdf_KL {
 	double KL(arma::cube P, arma::cube Q){
 		
 		// add small number to P, Q to prevent sigular
-		P = P+0.00001;
-		Q = Q+0.00001;
+		P = P+1e-9;
+		Q = Q+1e-9;
 		
 		// Normalize P&Q
 		P = P/arma::accu(P);

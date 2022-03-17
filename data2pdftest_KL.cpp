@@ -29,18 +29,18 @@ int main(){
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1_no_noise.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2_no_noise.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3_no_noise.csv"); 
-	
+	*/
 	// 3point data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv"); 	
-	*/
 	
+	/*
 	// Camera data
-	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
-	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
-	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
+	*/
 	double L1 = 2.5;
 	double L2 = 2.5;
 	double L3 = 2.5;
@@ -58,7 +58,7 @@ int main(){
 	arma::cube Q = phid.calcpdf();
 	
 	// define window size
-	int w = 5;
+	int w = 20;
 	
 	int i = 0;
 	double previous_cost = 0;
@@ -71,14 +71,14 @@ int main(){
 		//arma::cube P = phid.pdf_t(0, i+w);
 		//double cost = phid.KL(P,Q);
 		double cost = phid.KL(prev_P,P);
-		double result = -log(cost);
+		double result = cost;
 		//cout<<result<<endl;
 		myfile<<i<<","<<result<<",";
 		
 		previous_cost = cost;
 		prev_P = P;
 		myfile<<"\n";
-		i +=w;
+		i += w;
 	}
 	
 }
