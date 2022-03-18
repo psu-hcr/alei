@@ -52,11 +52,11 @@ int main(){
 	
 	ofstream myfile, segmentation;
 	myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL.csv");
-	segmentation.open ("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv");
+	//segmentation.open ("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv");
 	myfile<<"row, cost,";
 	myfile<<"\n";
-	segmentation<<"seg col";
-	segmentation<<"\n";
+	//segmentation<<"seg col";
+	//segmentation<<"\n";
 	
 	data2pdf_KL phid(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	arma::cube Q = phid.calcpdf();
@@ -87,7 +87,7 @@ int main(){
 		
 		if(cost-previous_cost > threshold){
 			cout<<"a new task at "<<i<<endl;
-			segmentation<<i<<endl;
+			//segmentation<<i<<endl;
 		}
 		
 		previous_cost = cost;
