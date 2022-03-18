@@ -50,10 +50,13 @@ int main(){
 	double dL3 = 0.05;
 	arma::vec new_origin = {0., 0., 0.};
 	
-	ofstream myfile;
+	ofstream myfile, segmentation;
 	myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL.csv");
+	segmentation.open ("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv");
 	myfile<<"row, cost,";
 	myfile<<"\n";
+	segmentation<<"seg col";
+	segmentation<<"\n";
 	
 	data2pdf_KL phid(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	arma::cube Q = phid.calcpdf();
@@ -65,7 +68,7 @@ int main(){
 	int s = 5;
 	
 	// define threshold value
-	double threshold = 10.;
+	double threshold = 6.;
 	
 	int i = 0;
 	double previous_cost = 0;
@@ -82,7 +85,10 @@ int main(){
 		//cout<<result<<endl;
 		myfile<<i<<","<<result<<",";
 		
-		if(cost-previous_cost > threshold) cout<<"a new task at "<<i<<endl;
+		if(cost-previous_cost > threshold){
+			cout<<"a new task at "<<i<<endl;
+			segmentation<<i<<endl;
+		}
 		
 		previous_cost = cost;
 		prev_P = P;
