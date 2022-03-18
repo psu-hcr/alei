@@ -61,6 +61,12 @@ int main(){
 	// define window size
 	int w = 20;
 	
+	// define overlap size
+	int s = 5;
+	
+	// define threshold value
+	double threshold = 10.;
+	
 	int i = 0;
 	double previous_cost = 0;
 	//arma::cube prev_P = arma::zeros(size(Q));
@@ -76,12 +82,12 @@ int main(){
 		//cout<<result<<endl;
 		myfile<<i<<","<<result<<",";
 		
-		if(cost-previous_cost > 12) cout<<"a new task at "<<i<<endl;
+		if(cost-previous_cost > threshold) cout<<"a new task at "<<i<<endl;
 		
 		previous_cost = cost;
 		prev_P = P;
 		myfile<<"\n";
-		i += w;
+		i += (w-s);
 	}
 	
 }
