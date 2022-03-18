@@ -96,4 +96,11 @@ int main(){
 		i += (w-s);
 	}
 	
+	arma::cube Pseg1 = phid.pdf_t(0, 225);
+	arma::cube Pseg2 = phid.pdf_t(226, 420);
+	arma::cube Pseg4 = phid.pdf_t(615, 840);
+	double cost12 = phid.KL(Pseg2,Pseg1);
+	double cost14 = phid.KL(Pseg4,Pseg1);
+	cout<<cost12<<endl;
+	cout<<cost14<<endl;
 }
