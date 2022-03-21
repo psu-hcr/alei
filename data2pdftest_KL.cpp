@@ -37,10 +37,17 @@ int main(){
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv"); 	
 	*/
+	/*
 	// Camera data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
-	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv");
+ 	*/
+	
+	// Camera data
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3.csv"); 	
 	
 	double L1 = 2.5;
 	double L2 = 2.5;
@@ -50,13 +57,24 @@ int main(){
 	double dL3 = 0.05;
 	arma::vec new_origin = {0., 0., 0.};
 	
-	//ofstream myfile, segmentation;
-	//myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL.csv");
-	//segmentation.open ("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_seg.csv");
-	//myfile<<"row, cost,";
-	//myfile<<"\n";
-	//segmentation<<"task1 seg, task2 seg, task3 seg,";
-	//segmentation<<"\n";
+	ofstream myfile1, myfile2, myfile3;
+	myfile1.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv");
+	myfile2.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv");
+	myfile3.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv");
+	myfile1<<"row, cost";
+	myfile1<<"\n";
+	myfile2<<"row, cost";
+	myfile2<<"\n";
+	myfile3<<"row, cost";
+	myfile3<<"\n";
+	
+	ofstream seg1, seg2, seg3;
+	seg1.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1_seg.csv");
+	seg2.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2_seg.csv"); 	
+	seg3.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3_seg.csv"); 	 	
+	seg1<<0<<"\n";
+	seg2<<0<<"\n";
+	seg3<<0<<"\n";
 	
 	data2pdf_KL phid1(Data1, Data1, Data1, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	data2pdf_KL phid2(Data2, Data2, Data2, L1, L2, L3, dL1, dL2, dL3, new_origin);
@@ -70,8 +88,8 @@ int main(){
 	
 	// define threshold value
 	double threshold1 = 6.;
-	double threshold2 = 10.;
-	double threshold3 = 10.5;
+	double threshold2 = 6.;
+	double threshold3 = 6.;
 	
 	// segmentation counter
 	int counter = 0;
@@ -90,35 +108,58 @@ int main(){
 	// calculate PDF
 	while(i < Data1.n_rows){
 		arma::cube P1 = phid1.pdf_t(i, i+w);	
-		arma::cube P2 = phid2.pdf_t(i, i+w);	
-		arma::cube P3 = phid3.pdf_t(i, i+w);	
 		double cost1 = phid1.KL(prev_P1,P1);
-		double cost2 = phid2.KL(prev_P2,P2);
-		double cost3 = phid3.KL(prev_P3,P3);
 		
 		if(cost1-previous_cost1 > threshold1){
 			cout<<"a new segmentation of task 1 at "<<i<<endl;
+			seg1<<i<<"\n";
 			counter++;
 			counter1++;
 		}
 		
+		myfile1<<i<<","<<cost1;
+		myfile1<<"\n";
+		previous_cost1 = cost1;
+		prev_P1 = P1;
+		i += (w-s);
+		
+	}
+	
+	i = 0;
+	while(i < Data2.n_rows){
+		arma::cube P2 = phid2.pdf_t(i, i+w);	
+		double cost2 = phid2.KL(prev_P2,P2);
+		
 		if(cost2-previous_cost2 > threshold2){
 			cout<<"a new segmentation of task 2 at "<<i<<endl;
+			seg2<<i<<"\n";
 			counter++;
 			counter2++;
 		}
 		
+		myfile2<<i<<","<<cost2;
+		myfile2<<"\n";
+		previous_cost2 = cost2;
+		prev_P2 = P2;
+		i += (w-s);
+		
+	}
+	
+	i = 0;
+	while(i < Data3.n_rows){
+		arma::cube P3 = phid3.pdf_t(i, i+w);	
+		double cost3 = phid3.KL(prev_P3,P3);
+		
 		if(cost3-previous_cost3 > threshold3){
 			cout<<"a new segmentation of task 3 at "<<i<<endl;
+			seg3<<i<<"\n";
 			counter++;
 			counter3++;
 		}
 		
-		previous_cost1 = cost1;
-		previous_cost2 = cost2;
+		myfile3<<i<<","<<cost3;
+		myfile3<<"\n";
 		previous_cost3 = cost3;
-		prev_P1 = P1;
-		prev_P2 = P2;
 		prev_P3 = P3;
 		i += (w-s);
 		
@@ -128,5 +169,7 @@ int main(){
 	cout<<"task1 segmentations are "<<counter1<<endl;
 	cout<<"task2 segmentations are "<<counter2<<endl;
 	cout<<"task3 segmentations are "<<counter3<<endl;
-	
+	myfile1.close();
+	myfile2.close();
+	myfile3.close();
 }

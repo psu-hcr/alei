@@ -19,14 +19,14 @@ int main(){
 	arma::mat seg1, seg2, seg3;
 
 	// Camera data
-	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
-	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
-	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3.csv"); 	
 	
 	// seg data
-	seg1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1_seg.csv"); 	
-	seg2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2_seg.csv"); 	
-	seg3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv"); 	
+	seg1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1_seg.csv"); 	
+	seg2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2_seg.csv"); 	
+	seg3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3_seg.csv"); 	
 	
 	double L1 = 2.5;
 	double L2 = 2.5;
@@ -43,7 +43,7 @@ int main(){
 	int n_seg = seg1.n_rows-1+seg2.n_rows-1+seg3.n_rows-1;
 	
 	arma::mat distance_mat = arma::zeros(n_seg, n_seg);
-	//cout<<n_seg<<endl;
+	cout<<n_seg<<endl;
 	arma::cube P;
 	arma::cube Q;
 	

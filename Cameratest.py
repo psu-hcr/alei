@@ -302,5 +302,5 @@ except KeyboardInterrupt:
 finally:
     pipe.stop()
     df = pd.DataFrame(data)
-    path = '/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv'
+    path = '/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3.csv'
     df.to_csv(path, header=True, index=False)

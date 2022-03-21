@@ -29,7 +29,6 @@ class k_medoids {
 	
 	void cluster(){
 		cost = calc_cost(medoids);
-		//cout<<classifcation<<endl;
 		
 		for(int i = 0; i<k;i++){
 			double new_cost = 1e9;
@@ -49,7 +48,7 @@ class k_medoids {
 			}
 		}
 		calc_cost(medoids);
-		cout<<medoids<<endl;
+		//cout<<medoids<<endl;
 		cout<<classifcation<<endl;
 		
 	}
