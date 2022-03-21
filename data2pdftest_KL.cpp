@@ -99,16 +99,21 @@ int main(){
 	
 	int i = 0;
 	double previous_cost1 = 0;
+	double previous_cost1_raw = 0;
 	double previous_cost2 = 0;
+	double previous_cost2_raw = 0;
 	double previous_cost3 = 0;
+	double previous_cost3_raw = 0;
 	arma::cube prev_P1 = phid1.pdf_t(i, i+w);
 	arma::cube prev_P2 = phid2.pdf_t(i, i+w);
 	arma::cube prev_P3 = phid3.pdf_t(i, i+w);
 	
 	// calculate PDF
 	while(i < Data1.n_rows){
-		arma::cube P1 = phid1.pdf_t(i, i+w);	
-		double cost1 = phid1.KL(prev_P1,P1);
+		arma::cube P1 = phid1.pdf_t(i, i+w);
+		double cost1_raw = phid1.KL(prev_P1,P1);
+		double cost1 = 0.25*(cost1_raw+previous_cost1_raw) + 0.5*previous_cost1;	// low pass filter
+		//double cost1 = phid1.KL(prev_P1,P1);
 		
 		if(cost1-previous_cost1 > threshold1){
 			cout<<"a new segmentation of task 1 at "<<i<<endl;
@@ -120,6 +125,7 @@ int main(){
 		myfile1<<i<<","<<cost1;
 		myfile1<<"\n";
 		previous_cost1 = cost1;
+		previous_cost1_raw = cost1_raw;
 		prev_P1 = P1;
 		i += (w-s);
 		
@@ -128,7 +134,9 @@ int main(){
 	i = 0;
 	while(i < Data2.n_rows){
 		arma::cube P2 = phid2.pdf_t(i, i+w);	
-		double cost2 = phid2.KL(prev_P2,P2);
+		double cost2_raw = phid2.KL(prev_P2,P2);
+		double cost2 = 0.25*(cost2_raw+previous_cost2_raw) + 0.5*previous_cost2;	// low pass filter
+		//double cost2 = phid2.KL(prev_P2,P2);
 		
 		if(cost2-previous_cost2 > threshold2){
 			cout<<"a new segmentation of task 2 at "<<i<<endl;
@@ -141,14 +149,17 @@ int main(){
 		myfile2<<"\n";
 		previous_cost2 = cost2;
 		prev_P2 = P2;
+		previous_cost2_raw = cost2_raw;
 		i += (w-s);
 		
 	}
 	
 	i = 0;
 	while(i < Data3.n_rows){
-		arma::cube P3 = phid3.pdf_t(i, i+w);	
-		double cost3 = phid3.KL(prev_P3,P3);
+		arma::cube P3 = phid3.pdf_t(i, i+w);
+		double cost3_raw = phid3.KL(prev_P3,P3);
+		double cost3 = 0.25*(cost3_raw+previous_cost3_raw) + 0.5*previous_cost3;	// low pass filter
+		//double cost3 = phid3.KL(prev_P3,P3);
 		
 		if(cost3-previous_cost3 > threshold3){
 			cout<<"a new segmentation of task 3 at "<<i<<endl;
@@ -161,6 +172,7 @@ int main(){
 		myfile3<<"\n";
 		previous_cost3 = cost3;
 		prev_P3 = P3;
+		previous_cost3_raw = cost3_raw;
 		i += (w-s);
 		
 	}

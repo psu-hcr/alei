@@ -22,20 +22,39 @@ x3 = data3[:, 1]
 y3 = data3[:, 2]
 z3 = data3[:, 3]
 
-cost = genfromtxt('/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv',delimiter=",",dtype=float)
-cost = np.delete(cost,0,0)
-row = cost[:, 0]
-KL = cost[:, 1]
+cost1 = genfromtxt('/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv',delimiter=",",dtype=float)
+cost1 = np.delete(cost1,0,0)
+row1 = cost1[:, 0]
+KL1 = cost1[:, 1]
+
+cost2 = genfromtxt('/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv',delimiter=",",dtype=float)
+cost2 = np.delete(cost2,0,0)
+row2 = cost2[:, 0]
+KL2 = cost2[:, 1]
+
+cost3 = genfromtxt('/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv',delimiter=",",dtype=float)
+cost3 = np.delete(cost3,0,0)
+row3 = cost3[:, 0]
+KL3 = cost3[:, 1]
 
 
 fig = plt.figure()
 ax1 = plt.axes(projection='3d')
 ax1.plot3D(x1,y1,z1, 'r')
-#ax1.plot3D(x2,y2,z2, 'b')
-#ax1.plot3D(x3,y3,z3, 'y')
+ax1.plot3D(x2,y2,z2, 'b')
+ax1.plot3D(x3,y3,z3, 'y')
 
 plt.figure()
-plt.plot(row,KL, 'r')
+plt.plot(row1,KL1, 'r')
+plt.title("cost of demo 1");
+
+plt.figure()
+plt.plot(row2,KL2, 'b')
+plt.title("cost of demo 2");
+
+plt.figure()
+plt.plot(row3,KL3, 'y')
+plt.title("cost of demo 3");
 
 plt.show()
 

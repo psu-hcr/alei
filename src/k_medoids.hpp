@@ -45,8 +45,11 @@ class k_medoids {
 						medoids = new_medoids;
 					}
 				}
+				
 			}
 		}
+		
+		// compute final classification 
 		calc_cost(medoids);
 		//cout<<medoids<<endl;
 		cout<<classifcation<<endl;
@@ -57,13 +60,17 @@ class k_medoids {
 		double newcost = 0;
 		for(int i = 0; i<distance_mat.n_cols;i++){
 			double dot_cost = 1e9;
+			
 			for(int j=0;j<k;j++){
 				double currdot_cost = distance_mat(i, int(current_medoids(j)));
+				
 				if (currdot_cost<dot_cost){
 					dot_cost = currdot_cost;
 					classifcation(i) = j;
 				}
+				
 			}
+			
 			newcost += dot_cost;
 		}
 		return newcost;
@@ -71,13 +78,16 @@ class k_medoids {
 	
 	bool check_repeat(int indice, arma::vec current_medoids){
 		bool indicator = false;
+		
 		for(int i = 0; i<k;i++){
 			
 			if(indice == current_medoids(i)){
 				indicator = true;
 				break;
 			}
+			
 		}
+		
 		return indicator;
 	}
 	
