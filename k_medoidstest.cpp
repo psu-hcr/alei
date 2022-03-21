@@ -43,7 +43,7 @@ int main(){
 	int n_seg = seg1.n_rows-1+seg2.n_rows-1+seg3.n_rows-1;
 	
 	arma::mat distance_mat = arma::zeros(n_seg, n_seg);
-	cout<<n_seg<<endl;
+	//cout<<n_seg<<endl;
 	arma::cube P;
 	arma::cube Q;
 	
@@ -90,7 +90,9 @@ int main(){
 	distance_mat.save(coeff,arma::csv_ascii);
 	coeff.close();
 	
-	k_medoids k_medoids(distance_mat, 3);
+	cout<<"complete calc distance_mat"<<endl;
 	
+	k_medoids k_medoids(distance_mat, 3);
+	k_medoids.cluster();
 	
 }
