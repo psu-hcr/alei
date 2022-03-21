@@ -38,8 +38,8 @@ int main(){
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv"); 	
 	*/
 	// Camera data
-	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
-	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv"); 	
 	
 	double L1 = 2.5;
@@ -50,57 +50,83 @@ int main(){
 	double dL3 = 0.05;
 	arma::vec new_origin = {0., 0., 0.};
 	
-	ofstream myfile, segmentation;
-	myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL.csv");
-	//segmentation.open ("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv");
-	myfile<<"row, cost,";
-	myfile<<"\n";
-	//segmentation<<"seg col";
-	//segmentation<<"\n";
+	//ofstream myfile, segmentation;
+	//myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL.csv");
+	//segmentation.open ("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_seg.csv");
+	//myfile<<"row, cost,";
+	//myfile<<"\n";
+	segmentation<<"task1 seg, task2 seg, task3 seg,";
+	segmentation<<"\n";
 	
-	data2pdf_KL phid(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
-	arma::cube Q = phid.calcpdf();
+	data2pdf_KL phid1(Data1, Data1, Data1, L1, L2, L3, dL1, dL2, dL3, new_origin);
+	data2pdf_KL phid2(Data2, Data2, Data2, L1, L2, L3, dL1, dL2, dL3, new_origin);
+	data2pdf_KL phid3(Data3, Data3, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
 	// define window size
 	int w = 20;
 	
 	// define overlap size
-	int s = 5;
+	int s = 0;
 	
 	// define threshold value
-	double threshold = 6.;
+	double threshold1 = 10.;
+	double threshold2 = 14.;
+	double threshold3 = 15.;
+	
+	// segmentation counter
+	int counter = 0;
+	int counter1 = 0;
+	int counter2 = 0;
+	int counter3 = 0;
 	
 	int i = 0;
-	double previous_cost = 0;
-	//arma::cube prev_P = arma::zeros(size(Q));
-	arma::cube prev_P = phid.pdf_t(i, i+w);
+	double previous_cost1 = 0;
+	double previous_cost2 = 0;
+	double previous_cost3 = 0;
+	arma::cube prev_P1 = phid1.pdf_t(i, i+w);
+	arma::cube prev_P2 = phid2.pdf_t(i, i+w);
+	arma::cube prev_P3 = phid3.pdf_t(i, i+w);
 	
 	// calculate PDF
 	while(i < Data1.n_rows){
-		arma::cube P = phid.pdf_t(i, i+w);	
-		//arma::cube P = phid.pdf_t(0, i+w);
-		//double cost = phid.KL(P,Q);
-		double cost = phid.KL(prev_P,P);
-		double result = cost;
-		//cout<<result<<endl;
-		myfile<<i<<","<<result<<",";
+		arma::cube P1 = phid1.pdf_t(i, i+w);	
+		arma::cube P2 = phid2.pdf_t(i, i+w);	
+		arma::cube P3 = phid3.pdf_t(i, i+w);	
+		double cost1 = phid1.KL(prev_P1,P1);
+		double cost2 = phid2.KL(prev_P2,P2);
+		double cost3 = phid3.KL(prev_P3,P3);
 		
-		if(cost-previous_cost > threshold){
-			cout<<"a new task at "<<i<<endl;
-			//segmentation<<i<<endl;
+		if(cost1-previous_cost1 > threshold1){
+			cout<<"a new segmentation of task 1 at "<<i<<endl;
+			counter++;
+			counter1++;
 		}
 		
-		previous_cost = cost;
-		prev_P = P;
-		myfile<<"\n";
+		if(cost2-previous_cost2 > threshold2){
+			cout<<"a new segmentation of task 2 at "<<i<<endl;
+			counter++;
+			counter2++;
+		}
+		
+		if(cost3-previous_cost3 > threshold3){
+			cout<<"a new segmentation of task 3 at "<<i<<endl;
+			counter++;
+			counter3++;
+		}
+		
+		previous_cost1 = cost1;
+		previous_cost2 = cost2;
+		previous_cost3 = cost3;
+		prev_P1 = P1;
+		prev_P2 = P2;
+		prev_P3 = P3;
 		i += (w-s);
+		segmentation<<"\n";
 	}
 	
-	arma::cube Pseg1 = phid.pdf_t(0, 225);
-	arma::cube Pseg2 = phid.pdf_t(226, 420);
-	arma::cube Pseg4 = phid.pdf_t(615, 840);
-	double cost12 = phid.KL(Pseg2,Pseg1);
-	double cost14 = phid.KL(Pseg4,Pseg1);
-	cout<<cost12<<endl;
-	cout<<cost14<<endl;
+	cout<<"total segmentations are "<<counter<<endl;
+	cout<<"task1 segmentations are "<<counter1<<endl;
+	cout<<"task2 segmentations are "<<counter2<<endl;
+	cout<<"task3 segmentations are "<<counter3<<endl;
+	
 }
