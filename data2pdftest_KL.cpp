@@ -55,8 +55,8 @@ int main(){
 	//segmentation.open ("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_seg.csv");
 	//myfile<<"row, cost,";
 	//myfile<<"\n";
-	segmentation<<"task1 seg, task2 seg, task3 seg,";
-	segmentation<<"\n";
+	//segmentation<<"task1 seg, task2 seg, task3 seg,";
+	//segmentation<<"\n";
 	
 	data2pdf_KL phid1(Data1, Data1, Data1, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	data2pdf_KL phid2(Data2, Data2, Data2, L1, L2, L3, dL1, dL2, dL3, new_origin);
@@ -66,12 +66,12 @@ int main(){
 	int w = 20;
 	
 	// define overlap size
-	int s = 0;
+	int s = 5;
 	
 	// define threshold value
-	double threshold1 = 10.;
-	double threshold2 = 14.;
-	double threshold3 = 15.;
+	double threshold1 = 6.;
+	double threshold2 = 10.;
+	double threshold3 = 10.5;
 	
 	// segmentation counter
 	int counter = 0;
@@ -121,7 +121,7 @@ int main(){
 		prev_P2 = P2;
 		prev_P3 = P3;
 		i += (w-s);
-		segmentation<<"\n";
+		
 	}
 	
 	cout<<"total segmentations are "<<counter<<endl;

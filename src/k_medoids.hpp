@@ -16,8 +16,16 @@ class k_medoids {
 		
 		distance_mat = _distance_mat;
 		k = _k;
+		
+		// initialze medoids
+		medoids = arma::zeros(k);
+		for(int i=0;i<k;i++){
+			medoids(i) = i;
+		}
 	};
 	
+	void cluster(){
+	}
 	
 	
 	

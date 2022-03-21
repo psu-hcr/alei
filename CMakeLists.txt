@@ -108,6 +108,9 @@ target_link_libraries(data2pdf_KL ${ARMADILLO_LIBRARIES})
 add_executable(3point 3point_dot.cpp)
 target_link_libraries(3point  ${ARMADILLO_LIBRARIES})
 
+add_executable(k_medoid k_medoidstest.cpp)
+target_link_libraries(k_medoid  ${ARMADILLO_LIBRARIES})
+
 
 
 
