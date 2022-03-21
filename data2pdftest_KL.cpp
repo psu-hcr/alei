@@ -81,15 +81,15 @@ int main(){
 	data2pdf_KL phid3(Data3, Data3, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
 	// define window size
-	int w = 20;
+	int w = 10;
 	
 	// define overlap size
 	int s = 5;
 	
 	// define threshold value
-	double threshold1 = 6.;
-	double threshold2 = 6.;
-	double threshold3 = 6.;
+	double threshold1 = 4.;
+	double threshold2 = 4.;
+	double threshold3 = 4.;
 	
 	// segmentation counter
 	int counter = 0;
@@ -108,6 +108,10 @@ int main(){
 	arma::cube prev_P2 = phid2.pdf_t(i, i+w);
 	arma::cube prev_P3 = phid3.pdf_t(i, i+w);
 	
+	double sum1 =0.0;
+	double sum2 =0.0;
+	double sum3 =0.0;
+	
 	// calculate PDF
 	while(i < Data1.n_rows){
 		arma::cube P1 = phid1.pdf_t(i, i+w);
@@ -115,12 +119,7 @@ int main(){
 		double cost1 = 0.25*(cost1_raw+previous_cost1_raw) + 0.5*previous_cost1;	// low pass filter
 		//double cost1 = phid1.KL(prev_P1,P1);
 		
-		if(cost1-previous_cost1 > threshold1){
-			cout<<"a new segmentation of task 1 at "<<i<<endl;
-			seg1<<i<<"\n";
-			counter++;
-			counter1++;
-		}
+		sum1 += cost1;
 		
 		myfile1<<i<<","<<cost1;
 		myfile1<<"\n";
@@ -128,6 +127,7 @@ int main(){
 		previous_cost1_raw = cost1_raw;
 		prev_P1 = P1;
 		i += (w-s);
+		counter1++;
 		
 	}
 	
@@ -138,12 +138,7 @@ int main(){
 		double cost2 = 0.25*(cost2_raw+previous_cost2_raw) + 0.5*previous_cost2;	// low pass filter
 		//double cost2 = phid2.KL(prev_P2,P2);
 		
-		if(cost2-previous_cost2 > threshold2){
-			cout<<"a new segmentation of task 2 at "<<i<<endl;
-			seg2<<i<<"\n";
-			counter++;
-			counter2++;
-		}
+		sum2 += cost2;
 		
 		myfile2<<i<<","<<cost2;
 		myfile2<<"\n";
@@ -151,7 +146,7 @@ int main(){
 		prev_P2 = P2;
 		previous_cost2_raw = cost2_raw;
 		i += (w-s);
-		
+		counter2++;
 	}
 	
 	i = 0;
@@ -161,15 +156,92 @@ int main(){
 		double cost3 = 0.25*(cost3_raw+previous_cost3_raw) + 0.5*previous_cost3;	// low pass filter
 		//double cost3 = phid3.KL(prev_P3,P3);
 		
-		if(cost3-previous_cost3 > threshold3){
-			cout<<"a new segmentation of task 3 at "<<i<<endl;
-			seg3<<i<<"\n";
-			counter++;
-			counter3++;
-		}
+		sum3 += cost3;
 		
 		myfile3<<i<<","<<cost3;
 		myfile3<<"\n";
+		previous_cost3 = cost3;
+		prev_P3 = P3;
+		previous_cost3_raw = cost3_raw;
+		i += (w-s);
+		counter3++;
+	}
+	
+	// calculate average
+	double mean1 = sum1/counter1;	cout<<mean1 <<endl;
+	double mean2 = sum2/counter2;	cout<<mean2 <<endl;
+	double mean3 = sum3/counter3;	cout<<mean3 <<endl;
+	
+	counter1 = 0.;
+	counter2 = 0.;
+	counter3 = 0.;
+	
+	// segment task
+	i = 0;
+	previous_cost1 = 0.;
+	while(i < Data1.n_rows){
+		arma::cube P1 = phid1.pdf_t(i, i+w);
+		double cost1_raw = phid1.KL(prev_P1,P1);
+		double cost1 = 0.25*(cost1_raw+previous_cost1_raw) + 0.5*previous_cost1;	// low pass filter
+		//double cost1 = phid1.KL(prev_P1,P1);
+		
+		if(cost1> mean1){
+				if(previous_cost1<=mean1){
+					cout<<"a new segmentation of task 1 at "<<i<<endl;
+					seg1<<i<<"\n";
+					counter++;
+					counter1++;
+				}
+		}
+		
+		previous_cost1 = cost1;
+		previous_cost1_raw = cost1_raw;
+		prev_P1 = P1;
+		i += (w-s);
+		
+	}
+	
+	i = 0;
+	previous_cost2 = 0.;
+	while(i < Data2.n_rows){
+		arma::cube P2 = phid2.pdf_t(i, i+w);	
+		double cost2_raw = phid2.KL(prev_P2,P2);
+		double cost2 = 0.25*(cost2_raw+previous_cost2_raw) + 0.5*previous_cost2;	// low pass filter
+		//double cost2 = phid2.KL(prev_P2,P2);
+		
+		if(cost2> mean2){
+				if(previous_cost2<=mean2){
+					cout<<"a new segmentation of task 2 at "<<i<<endl;
+					seg2<<i<<"\n";
+					counter++;
+					counter2++;
+				}
+		}
+		
+		previous_cost2 = cost2;
+		prev_P2 = P2;
+		previous_cost2_raw = cost2_raw;
+		i += (w-s);
+		
+	}
+	
+	i = 0;
+	previous_cost3 = 0.;
+	while(i < Data3.n_rows){
+		arma::cube P3 = phid3.pdf_t(i, i+w);
+		double cost3_raw = phid3.KL(prev_P3,P3);
+		double cost3 = 0.25*(cost3_raw+previous_cost3_raw) + 0.5*previous_cost3;	// low pass filter
+		//double cost3 = phid3.KL(prev_P3,P3);
+		
+		if(cost3> mean3){
+				if(previous_cost3<=mean3){
+					cout<<"a new segmentation of task 3 at "<<i<<endl;
+					seg3<<i<<"\n";
+					counter++;
+					counter3++;
+				}
+		}
+		
 		previous_cost3 = cost3;
 		prev_P3 = P3;
 		previous_cost3_raw = cost3_raw;
