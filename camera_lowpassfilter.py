@@ -12,7 +12,7 @@ class lpf:
 		self.path = _path
 		
 	def filter(self, x_curr, x_prev, y_prev):
-		return (x_curr+x_prev+0.376*y_prev)/2.376
+		return (x_curr+x_prev+2.078*y_prev)/4.078
 	
 	def calc(self):
 		self.newdata = np.copy(self.data)
@@ -28,11 +28,11 @@ class lpf:
 		df.to_csv(self.path, header=False, index=False)
 	
 def main():
-	data1 = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1.csv',delimiter=",",dtype=float)
+	data1 = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv',delimiter=",",dtype=float)
 	data1 = np.delete(data1,0,0)
 	data1 = data1[:,:4]
 	print(data1.shape)
-	path = '/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1_f.csv'
+	path = '/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1_f.csv'
 	LPF = lpf(data1,path)
 	LPF.calc()
 	LPF.save()

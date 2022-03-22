@@ -81,15 +81,10 @@ int main(){
 	data2pdf_KL phid3(Data3, Data3, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
 	// define window size
-	int w = 20;
+	int w = 10; // camera sampling rate is 50hz
 	
 	// define overlap size
 	int s = 5;
-	
-	// define threshold value
-	double threshold1 = 4.;
-	double threshold2 = 4.;
-	double threshold3 = 4.;
 	
 	// segmentation counter
 	int counter = 0;
@@ -116,8 +111,8 @@ int main(){
 	while(i < Data1.n_rows){
 		arma::cube P1 = phid1.pdf_t(i, i+w);
 		double cost1_raw = phid1.KL(prev_P1,P1);
-		double cost1 = 0.25*(cost1_raw+previous_cost1_raw) + 0.5*previous_cost1;	// low pass filter
-		//double cost1 = phid1.KL(prev_P1,P1);
+		//double cost1 = 0.25*(cost1_raw+previous_cost1_raw) + 0.5*previous_cost1;	// low pass filter
+		double cost1 = cost1_raw;
 		
 		sum1 += cost1;
 		
@@ -135,8 +130,8 @@ int main(){
 	while(i < Data2.n_rows){
 		arma::cube P2 = phid2.pdf_t(i, i+w);	
 		double cost2_raw = phid2.KL(prev_P2,P2);
-		double cost2 = 0.25*(cost2_raw+previous_cost2_raw) + 0.5*previous_cost2;	// low pass filter
-		//double cost2 = phid2.KL(prev_P2,P2);
+		//double cost2 = 0.25*(cost2_raw+previous_cost2_raw) + 0.5*previous_cost2;	// low pass filter
+		double cost2 = cost2_raw;
 		
 		sum2 += cost2;
 		
@@ -153,8 +148,8 @@ int main(){
 	while(i < Data3.n_rows){
 		arma::cube P3 = phid3.pdf_t(i, i+w);
 		double cost3_raw = phid3.KL(prev_P3,P3);
-		double cost3 = 0.25*(cost3_raw+previous_cost3_raw) + 0.5*previous_cost3;	// low pass filter
-		//double cost3 = phid3.KL(prev_P3,P3);
+		//double cost3 = 0.25*(cost3_raw+previous_cost3_raw) + 0.5*previous_cost3;	// low pass filter
+		double cost3 = cost3_raw;
 		
 		sum3 += cost3;
 		
