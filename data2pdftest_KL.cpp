@@ -37,18 +37,18 @@ int main(){
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv"); 	
 	*/
-	/*
+	
 	// Camera data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv");
- 	*/
-	
+ 	
+	/*
 	// Camera data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3.csv"); 	
-	
+	*/
 	double L1 = 2.5;
 	double L2 = 2.5;
 	double L3 = 2.5;
@@ -69,9 +69,9 @@ int main(){
 	myfile3<<"\n";
 	
 	ofstream seg1, seg2, seg3;
-	seg1.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1_seg.csv");
-	seg2.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2_seg.csv"); 	
-	seg3.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3_seg.csv"); 	 	
+	seg1.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1_seg.csv");
+	seg2.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2_seg.csv"); 	
+	seg3.open("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv"); 	 	
 	seg1<<0<<"\n";
 	seg2<<0<<"\n";
 	seg3<<0<<"\n";
@@ -81,10 +81,10 @@ int main(){
 	data2pdf_KL phid3(Data3, Data3, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
 	// define window size
-	int w = 10; // camera sampling rate is 50hz
+	int w = 20; // camera sampling rate is 50hz
 	
 	// define overlap size
-	int s = 5;
+	int s = w/10;
 	
 	// segmentation counter
 	int counter = 0;
@@ -177,8 +177,8 @@ int main(){
 	while(i < Data1.n_rows){
 		arma::cube P1 = phid1.pdf_t(i, i+w);
 		double cost1_raw = phid1.KL(prev_P1,P1);
-		double cost1 = 0.25*(cost1_raw+previous_cost1_raw) + 0.5*previous_cost1;	// low pass filter
-		//double cost1 = phid1.KL(prev_P1,P1);
+		//double cost1 = 0.25*(cost1_raw+previous_cost1_raw) + 0.5*previous_cost1;	// low pass filter
+		double cost1 = phid1.KL(prev_P1,P1);
 		
 		if(cost1> mean1){
 				if(previous_cost1<=mean1){
@@ -201,8 +201,8 @@ int main(){
 	while(i < Data2.n_rows){
 		arma::cube P2 = phid2.pdf_t(i, i+w);	
 		double cost2_raw = phid2.KL(prev_P2,P2);
-		double cost2 = 0.25*(cost2_raw+previous_cost2_raw) + 0.5*previous_cost2;	// low pass filter
-		//double cost2 = phid2.KL(prev_P2,P2);
+		//double cost2 = 0.25*(cost2_raw+previous_cost2_raw) + 0.5*previous_cost2;	// low pass filter
+		double cost2 = phid2.KL(prev_P2,P2);
 		
 		if(cost2> mean2){
 				if(previous_cost2<=mean2){
@@ -225,8 +225,8 @@ int main(){
 	while(i < Data3.n_rows){
 		arma::cube P3 = phid3.pdf_t(i, i+w);
 		double cost3_raw = phid3.KL(prev_P3,P3);
-		double cost3 = 0.25*(cost3_raw+previous_cost3_raw) + 0.5*previous_cost3;	// low pass filter
-		//double cost3 = phid3.KL(prev_P3,P3);
+		//double cost3 = 0.25*(cost3_raw+previous_cost3_raw) + 0.5*previous_cost3;	// low pass filter
+		double cost3 = phid3.KL(prev_P3,P3);
 		
 		if(cost3> mean3){
 				if(previous_cost3<=mean3){
