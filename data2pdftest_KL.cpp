@@ -81,7 +81,7 @@ int main(){
 	data2pdf_KL phid3(Data3, Data3, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
 	// define window size
-	int w = 10;
+	int w = 20;
 	
 	// define overlap size
 	int s = 5;
