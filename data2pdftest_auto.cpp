@@ -42,8 +42,11 @@ int main(){
 	string path_to_seg2 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2_seg.csv";
 	string path_to_seg3 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv";
 	
+	cout<<"task 1"<<"\n"<<endl;
 	int n_seg1 = seg1.autoSeg(path_to_cost1, path_to_seg1);
+	cout<<"task 2"<<"\n"<<endl;
 	int n_seg2 = seg2.autoSeg(path_to_cost2, path_to_seg2);
+	cout<<"task 3"<<"\n"<<endl;
 	int n_seg3 = seg3.autoSeg(path_to_cost3, path_to_seg3);
 	
 	cout<<"n_seg1 "<<n_seg1<<endl;

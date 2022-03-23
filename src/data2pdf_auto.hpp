@@ -105,6 +105,7 @@ class data2pdf_auto {
 			double mean1 = sum1/counter;	cout<<"mean "<<mean1 <<endl;
 			
 			segfile.open(path_to_seg);
+			segfile<<0<<"\n";
 			i = 1;
 			n_seg = 0;
 			while(i<cost_vec.n_rows){
