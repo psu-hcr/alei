@@ -62,7 +62,7 @@ class data2pdf_auto {
 	
 	int autoSeg(string path_to_cost, string path_to_seg){
 		
-		int w = 150;
+		int w = 300;
 		int n_seg = 100;
 		int prev_seg = 0;
 		int pprev_seg = 50;
@@ -70,6 +70,8 @@ class data2pdf_auto {
 		
 		ofstream costfile, segfile;
 		while((n_seg != prev_seg)||( prev_seg != pprev_seg)||( pprev_seg != ppprev_seg)){
+			
+			int step = w/5;
 			
 			ppprev_seg = pprev_seg;
 			pprev_seg = prev_seg;
@@ -89,7 +91,7 @@ class data2pdf_auto {
 			while(i < data1.n_rows){
 				arma::cube P1 = pdf_t(i, i+w);
 				double cost = KL(prev_P1,P1);
-				cost_vec(i/(w-s)) = cost;	//cout<<"cost"<<i/w<<endl;
+				cost_vec(i/(w-s)) = cost;	
 				sum1 += cost;
 				costfile<<i<<","<<cost;
 				costfile<<"\n";
@@ -120,7 +122,7 @@ class data2pdf_auto {
 			cout<<"curr n_seg "<<n_seg<<endl;
 			cout<<"\n";
 			
-			w -=10;
+			w -=step;
 			
 		}
 		

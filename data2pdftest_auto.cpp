@@ -16,12 +16,12 @@ arma::vec unom(double t){
 };
 
 int main(){ 
-	arma::mat Data1;
+	arma::mat Data1, Data2, Data3;
 	
-	string a = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv";
-	// Camera data
-	Data1.load(a); 	
- 	
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
+ 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv");
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv");
+	
 	double L1 = 2.5;
 	double L2 = 2.5;
 	double L3 = 2.5;
@@ -31,10 +31,23 @@ int main(){
 	arma::vec new_origin = {0., 0., 0.};
 	
 	data2pdf_auto seg1(Data1, L1, L2, L3, dL1, dL2, dL3, new_origin);
+	data2pdf_auto seg2(Data2, L1, L2, L3, dL1, dL2, dL3, new_origin);
+	data2pdf_auto seg3(Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
-	string path_to_cost = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv";
-	string path_to_seg = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv";
+	string path_to_cost1 = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv";
+	string path_to_cost2 = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv";
+	string path_to_cost3 = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv";
 	
-	int n_seg = seg1.autoSeg(path_to_cost, path_to_seg);
-	cout<<"n_seg "<<n_seg<<endl;
+	string path_to_seg1 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1_seg.csv";
+	string path_to_seg2 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2_seg.csv";
+	string path_to_seg3 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv";
+	
+	int n_seg1 = seg1.autoSeg(path_to_cost1, path_to_seg1);
+	int n_seg2 = seg2.autoSeg(path_to_cost2, path_to_seg2);
+	int n_seg3 = seg3.autoSeg(path_to_cost3, path_to_seg3);
+	
+	cout<<"n_seg1 "<<n_seg1<<endl;
+	cout<<"n_seg2 "<<n_seg2<<endl;
+	cout<<"n_seg3 "<<n_seg3<<endl;
+
 }
