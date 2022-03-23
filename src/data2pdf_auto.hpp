@@ -36,7 +36,7 @@ class data2pdf_auto {
 		// calculate pdf till col
 		
 		// reinitialze phi_t
-		phi_t = arma::zeros( n_rows, n_cols, n_slices );
+		phi_t = arma::zeros(n_rows, n_cols, n_slices);
 		
 		if(col > data1.n_rows) col = data1.n_rows;
 		
@@ -64,33 +64,39 @@ class data2pdf_auto {
 		int n_seg = 100;
 		int prev_seg = 0;
 		int pprev_seg = 50;
-		int w = 150;
-		double sum1 =0.0;
-		double previous_cost = 0;
+		int w = 170;
 		ofstream costfile, segfile;
 		while((n_seg!=prev_seg)||( prev_seg!=pprev_seg)){
+			
+			pprev_seg = prev_seg;
+			prev_seg = n_seg;
+			
+			cout<<"currr w "<<w<<endl;
 			
 			// calc cost
 			costfile.open(path_to_cost);
 			int s = w/10;
-			arma::vec cost_vec = arma::zeros(data1.n_rows/w);
-			
+			double sum1 =0.0;
+			double previous_cost = 0.;
+			arma::vec cost_vec = arma::zeros((data1.n_rows/(w-s))+2);	//cout<<"cost_n "<<cost_vec.n_rows<<endl;
 			int i = 0;
-			arma::cube prev_P1 = pdf_t(i, i+w);
 			int counter = 0;
+			arma::cube prev_P1 = pdf_t(i, i+w);
 			while(i < data1.n_rows){
 				arma::cube P1 = pdf_t(i, i+w);
 				double cost = KL(prev_P1,P1);
-				cost_vec(i/w) = cost;
+				cost_vec(i/(w-s)) = cost;	//cout<<"cost"<<i/w<<endl;
 				sum1 += cost;
 				costfile<<i<<","<<cost;
 				costfile<<"\n";
 				previous_cost = cost;
 				prev_P1 = P1;
-				i += (w-s);
+				i += (w-s);	//cout<<i<<endl;
+				counter++;
 			}
 			costfile.close();
-			double mean1 = sum1/counter;	cout<<mean1 <<endl;
+			
+			double mean1 = sum1/counter;	cout<<"mean "<<mean1 <<endl;
 			
 			segfile.open(path_to_seg);
 			i = 1;
@@ -98,19 +104,22 @@ class data2pdf_auto {
 			while(i<cost_vec.n_rows){
 				if(cost_vec(i)> mean1){
 					if(cost_vec(i-1)<=mean1){
-						cout<<"a new segmentation of task at "<<i*w<<endl;
-						segfile<<i*w<<"\n";
+						cout<<"a new segmentation of task at "<<i*(w-s)<<endl;
+						segfile<<i*(w-s)<<"\n";
 						n_seg++;
 					}
 				}
+				i++;
 			}
 			segfile.close();
 			
-			pprev_seg = prev_seg;
-			prev_seg = n_seg;
-			w -=10;
-		}
+			cout<<"curr n_seg "<<n_seg<<endl;
+			cout<<"\n";
 			
+			w -=10;
+			
+		}
+		
 	return n_seg;
 	}
 	

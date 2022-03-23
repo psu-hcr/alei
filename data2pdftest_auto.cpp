@@ -32,8 +32,9 @@ int main(){
 	
 	data2pdf_auto seg1(Data1, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
-	string path_to_cost = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv";
-	string path_to_seg = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1_seg.csv";
+	string path_to_cost = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv";
+	string path_to_seg = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2_seg.csv";
 	
-	seg1.autoSeg(path_to_cost, path_to_seg);
+	int n_seg = seg1.autoSeg(path_to_cost, path_to_seg);
+	cout<<"n_seg"<<n_seg<<endl;
 }
