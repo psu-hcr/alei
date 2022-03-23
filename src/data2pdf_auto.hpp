@@ -61,13 +61,17 @@ class data2pdf_auto {
 	};
 	
 	int autoSeg(string path_to_cost, string path_to_seg){
+		
+		int w = 150;
 		int n_seg = 100;
 		int prev_seg = 0;
 		int pprev_seg = 50;
-		int w = 170;
+		int ppprev_seg = 30;
+		
 		ofstream costfile, segfile;
-		while((n_seg!=prev_seg)||( prev_seg!=pprev_seg)){
+		while((n_seg != prev_seg)||( prev_seg != pprev_seg)||( pprev_seg != ppprev_seg)){
 			
+			ppprev_seg = pprev_seg;
 			pprev_seg = prev_seg;
 			prev_seg = n_seg;
 			

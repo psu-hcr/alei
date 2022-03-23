@@ -18,7 +18,7 @@ arma::vec unom(double t){
 int main(){ 
 	arma::mat Data1;
 	
-	string a = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv";
+	string a = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv";
 	// Camera data
 	Data1.load(a); 	
  	
@@ -32,9 +32,9 @@ int main(){
 	
 	data2pdf_auto seg1(Data1, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
-	string path_to_cost = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv";
-	string path_to_seg = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2_seg.csv";
+	string path_to_cost = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv";
+	string path_to_seg = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv";
 	
 	int n_seg = seg1.autoSeg(path_to_cost, path_to_seg);
-	cout<<"n_seg"<<n_seg<<endl;
+	cout<<"n_seg "<<n_seg<<endl;
 }
