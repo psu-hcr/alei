@@ -6,6 +6,7 @@
 #include <armadillo>
 #include <bits/stdc++.h>
 #include <chrono> 
+#include <string>
 using namespace std;
 
 #include"src/data2pdf_KL.hpp"
@@ -37,9 +38,9 @@ int main(){
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/3dotsample3.csv"); 	
 	*/
-	
+	string a = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv";
 	// Camera data
-	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
+	Data1.load(a); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv");
  	
@@ -81,7 +82,7 @@ int main(){
 	data2pdf_KL phid3(Data3, Data3, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	
 	// define window size
-	int w = 20; // camera sampling rate is 50hz
+	int w = 110; // camera sampling rate is 50hz
 	
 	// define overlap size
 	int s = w/10;

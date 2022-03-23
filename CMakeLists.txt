@@ -105,6 +105,9 @@ target_link_libraries(data2pdf ${ARMADILLO_LIBRARIES})
 add_executable(data2pdf_KL data2pdftest_KL.cpp)
 target_link_libraries(data2pdf_KL ${ARMADILLO_LIBRARIES})
 
+add_executable(data2pdf_auto data2pdftest_auto.cpp)
+target_link_libraries(data2pdf_auto ${ARMADILLO_LIBRARIES})
+
 add_executable(3point 3point_dot.cpp)
 target_link_libraries(3point  ${ARMADILLO_LIBRARIES})
 
