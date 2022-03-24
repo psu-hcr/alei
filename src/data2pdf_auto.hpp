@@ -60,6 +60,34 @@ class data2pdf_auto {
 		return phi_t;
 	};
 	
+	arma::cube sum_pdf_t(int start, int col, arma::cube phi_init){
+		// calculate pdf till col
+		
+		// reinitialze phi_t
+		phi_t = phi_init;
+		
+		if(col > data1.n_rows) col = data1.n_rows;
+		
+		// add data for datasheet 1
+		//cout<<"data1"<<endl;
+		for (int i = start; i < col; i++){
+			// shift x y z off center
+			double x = data1(i, 1) + L1 - new_origin(0);
+			double y = data1(i, 2) + L2 - new_origin(1);
+			double z = data1(i, 3) + L3 - new_origin(2);
+			
+			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
+			phi_t(n_x, n_y, n_z)++;	//cout<<"phi_t(n_x, n_y, n_z)"<<phi_t(n_x, n_y, n_z)<<endl;
+		};
+		
+		// normalize phi
+		phi_t = phi_t/arma::accu(phi_t);
+		
+		return phi_t;
+	};
+	
 	int autoSeg(string path_to_cost, string path_to_seg){
 		
 		int w = 300;

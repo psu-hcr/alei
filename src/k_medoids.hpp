@@ -52,7 +52,7 @@ class k_medoids {
 		// compute final classification 
 		calc_cost(medoids);
 		//cout<<medoids<<endl;
-		cout<<classifcation<<endl;
+		//cout<<classifcation<<endl;
 		
 	}
 	
@@ -85,7 +85,7 @@ class k_medoids {
 				indicator = true;
 				break;
 			}
-			
+		
 		}
 		
 		return indicator;
