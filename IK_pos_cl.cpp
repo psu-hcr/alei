@@ -67,8 +67,8 @@ class figureight{
 	arma::vec vel;
 	arma::vec Xcurr;
 	arma::vec Ucurr;
-	arma::vec shift = {0.5, 0, 0.1, 0, 0.7, 0};
-	//arma::vec shift = {0.5, 0, 0.3, 0, 0.7, 0};
+	//arma::vec shift = {0.5, 0, 0.1, 0, 0.7, 0};
+	arma::vec shift = {0.5, 0, 0.3, 0, 0.7, 0};
 	ofstream *myfile;
 	dot_model *sys1Pointer;
 	dklcost<dot_model> *costPointer;
