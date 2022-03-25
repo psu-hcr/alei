@@ -90,7 +90,7 @@ class data2pdf_auto {
 	
 	int autoSeg(string path_to_cost, string path_to_seg){
 		
-		int w = 300;
+		int w = 190;
 		int n_seg = 100;
 		int prev_seg = 0;
 		int pprev_seg = 50;
@@ -161,8 +161,8 @@ class data2pdf_auto {
 	double KL(arma::cube P, arma::cube Q){
 		
 		// add small number to P, Q to prevent sigular
-		P = P+1e-9;
-		Q = Q+1e-9;
+		P = P+1e-99;
+		Q = Q+1e-99;
 		
 		// Normalize P&Q
 		P = P/arma::accu(P);

@@ -18,9 +18,9 @@ arma::vec unom(double t){
 int main(){ 
 	arma::mat Data1, Data2, Data3;
 	
-	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1.csv"); 	
- 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2.csv");
-	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3.csv");
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
+ 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv");
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv");
 	
 	double L1 = 2.5;
 	double L2 = 2.5;
@@ -38,9 +38,9 @@ int main(){
 	string path_to_cost2 = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv";
 	string path_to_cost3 = "/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv";
 	
-	string path_to_seg1 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1_seg.csv";
-	string path_to_seg2 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2_seg.csv";
-	string path_to_seg3 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3_seg.csv";
+	string path_to_seg1 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1_seg.csv";
+	string path_to_seg2 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2_seg.csv";
+	string path_to_seg3 = "/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv";
 	
 	cout<<"task 1"<<"\n"<<endl;
 	int n_seg1 = seg1.autoSeg(path_to_cost1, path_to_seg1);

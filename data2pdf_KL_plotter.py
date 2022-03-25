@@ -37,17 +37,24 @@ cost3 = np.delete(cost3,0,0)
 row3 = cost3[:, 0]
 KL3 = cost3[:, 1]
 
-"""
+
 fig = plt.figure()
 ax1 = plt.axes(projection='3d')
+plt.title("traj",fontsize=30)
+plt.xlabel("x",fontsize=30)
+plt.ylabel("y",fontsize=30)
+ax1.zaxis.set_rotate_label(False) 
+ax1.set_zlabel('z', fontsize=30, rotation = 0)
 ax1.plot3D(x1,y1,z1, 'r')
-ax1.plot3D(x2,y2,z2, 'b')
-ax1.plot3D(x3,y3,z3, 'y')
-"""
+#ax1.plot3D(x2,y2,z2, 'b')
+#ax1.plot3D(x3,y3,z3, 'y')
+
 
 plt.figure()
 plt.plot(row1,KL1, 'r')
 plt.title("cost of demo 1");
+plt.xlabel("time window")
+plt.ylabel("KL_cost")
 
 plt.figure()
 plt.plot(row2,KL2, 'b')
