@@ -91,6 +91,36 @@ class k_medoids {
 		return indicator;
 	}
 	
+	arma::vec task_gen(arma::vec seg1, arma::vec seg2, arma::vec seg3, int n_subtask, int n_start){
+		arma::vec list = arma::zeros(seg1.n_rows);
+		arma::vec Prob = arma::zeros(seg1.n_rows, seg1.n_rows);
+		if ((seg1.n_rows == seg2.n_rows) && (seg2.n_rows == seg3.n_rows)){
+			for(int i = 0;i<seg1.n_rows-1;i++){
+				int a = seg1(i);
+				int b = seg1(i+1);
+				Prob(a, b)++;
+			}
+			for(int i = 0;i<seg2.n_rows-1;i++){
+				int a = seg2(i);
+				int b = seg2(i+1);
+				Prob(a, b)++;
+			}
+			for(int i = 0;i<seg3.n_rows-1;i++){
+				int a = seg3(i);
+				int b = seg3(i+1);
+				Prob(a, b)++;
+			}
+		}
+		else{
+			cout<<"ERROR: n_seg are not same for each demo"<<endl;
+		}
+		cout<<"Prob"<<Prob<<endl;
+		return list;
+			
+	}
+	
+
+	
 };
 
 #endif

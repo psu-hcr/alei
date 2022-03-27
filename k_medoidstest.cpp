@@ -14,7 +14,7 @@ using namespace std;
 int main(){ 
 	arma::mat Data1, Data2, Data3;
 	arma::mat seg1, seg2, seg3;
-	/*
+	
 	// Camera data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv"); 	
@@ -24,8 +24,8 @@ int main(){
 	seg1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording1_seg.csv"); 	
 	seg2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2_seg.csv"); 	
 	seg3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3_seg.csv"); 	
-	*/
 	
+	/*
 	// Camera data
 	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1.csv"); 	
 	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2.csv"); 	
@@ -35,7 +35,7 @@ int main(){
 	seg1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new1_seg.csv"); 	
 	seg2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new2_seg.csv"); 	
 	seg3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_new3_seg.csv"); 	
-	
+	*/
 	double L1 = 2.5;
 	double L2 = 2.5;
 	double L3 = 2.5;
@@ -92,14 +92,35 @@ int main(){
 	// calculate cluster
 	k_medoids k_medoids(distance_mat, 3);
 	k_medoids.cluster();
-	arma::vec classifcation = k_medoids.classifcation;
-	cout<<"classification is "<<endl;
-	cout<<classifcation<<endl;
+	arma::vec classifcation_1 = arma::zeros(seg1.n_rows-1);
+	arma::vec classifcation_2 = arma::zeros(seg2.n_rows-1);
+	arma::vec classifcation_3 = arma::zeros(seg3.n_rows-1);
+	for(int i =0; i<k_medoids.classifcation.n_rows; i++){
+		if(i<classifcation_1.n_rows){
+			classifcation_1(i) = k_medoids.classifcation(i);
+		}
+		else if (i<classifcation_1.n_rows+classifcation_2.n_rows){
+			classifcation_2(i-classifcation_1.n_rows) = k_medoids.classifcation(i);
+		}
+		else{
+			classifcation_3(i-classifcation_1.n_rows-classifcation_2.n_rows) = k_medoids.classifcation(i);
+		}
+	}
+	cout<<"classification_1 is "<<endl;
+	cout<<classifcation_1<<endl;
+	cout<<"classification_2 is "<<endl;
+	cout<<classifcation_2<<endl;
+	cout<<"classification_3 is "<<endl;
+	cout<<classifcation_3<<endl;
 	ofstream c;
 	c.open("/home/zxl5344/test/src/alei/Gaussian_traj/classifcation.csv");
-	distance_mat.save(c,arma::csv_ascii);
+	k_medoids.classifcation.save(c,arma::csv_ascii);
 	c.close();
 	
+	// generate task list
+	k_medoids.task_gen(classifcation_1, classifcation_2, classifcation_3, 3, 0);
+	
+	/*
 	// combine seg into subtask
 	// number of subtask must change maunally 
 	arma::cube subtask0 = arma::zeros(size(P));
@@ -168,5 +189,6 @@ int main(){
 		}
 		
 	}
+	*/
 	cout<<"complete task"<<endl;
 }
