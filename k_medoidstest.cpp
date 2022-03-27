@@ -118,6 +118,7 @@ int main(){
 	c.close();
 	
 	// generate task list
+	cout<<"start recreate tasklists"<<endl;
 	k_medoids.task_gen(classifcation_1, classifcation_2, classifcation_3, 3, 0);
 	
 	/*
