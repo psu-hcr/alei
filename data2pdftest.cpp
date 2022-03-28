@@ -21,30 +21,30 @@ arma::vec unom(double t){
 int main(){ 
 	arma::mat Data1, Data2, Data3;
 
-	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw1.csv"); 	
-	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw2.csv"); 	
-	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw3.csv"); 
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw1_nonstop.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw2_nonstop.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw3_nonstop.csv"); 
 	
 	ofstream KL1, KL2, KL3;
 	KL1.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv");
 	KL2.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv");
 	KL3.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv");
 	
-	double L1 = 1.5;
-	double L2 = 1.5;
-	double L3 = 1.5;
-	double dL1 = 0.05;
-	double dL2 = 0.05;
-	double dL3 = 0.05;
-	arma::vec new_origin = {0, 0, 0};
+	double L1 = 0.5;
+	double L2 = 0.5;
+	double L3 = 0.5;
+	double dL1 = 0.01;
+	double dL2 = 0.01;
+	double dL3 = 0.01;
+	arma::vec new_origin = {0, 0, 0.6};
 	
 	data2pdf_auto phid1(Data1,L1, L2, L3, dL1, dL2, dL3, new_origin);
 	data2pdf_auto phid2(Data2,L1, L2, L3, dL1, dL2, dL3, new_origin);
 	data2pdf_auto phid3(Data3,L1, L2, L3, dL1, dL2, dL3, new_origin);
-	int T = 0.5*50; // Window_size* 50HZ 
+	int T = 0.5*50; // Sampling freq is 50HZ 
 	arma::cube P, Q;
 	
-	/*
+	
 	P = phid1.pdf_t(0, T);
 	for (int i =1; i<Data1.n_rows;i++){
 
@@ -73,8 +73,8 @@ int main(){
 		KL3<<"\n";
 	}
 	
-	*/
 	
+	/*
 	P = phid1.pdf_t(0, T)+phid2.pdf_t(0, T)+phid3.pdf_t(0, T);
 	P = P/arma::accu(P);	// normalize
 	for (int i =1; i<Data1.n_rows;i++){
@@ -87,6 +87,7 @@ int main(){
 		}
 		
 	}
+	*/
 	
 	KL1.close();
 	KL2.close();

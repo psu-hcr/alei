@@ -3,20 +3,20 @@ from numpy import genfromtxt
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-"""
-data1 = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw1.csv',delimiter=",",dtype=float)
+
+data1 = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw1_nonstop.csv',delimiter=",",dtype=float)
 data1 = np.delete(data1,0,0)
 x1 = data1[:, 1]
 y1 = data1[:, 2]
 z1 = data1[:, 3]
 
-data2 = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw2.csv',delimiter=",",dtype=float)
+data2 = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw2_nonstop.csv',delimiter=",",dtype=float)
 data2 = np.delete(data2,0,0)
 x2 = data2[:, 1]
 y2 = data2[:, 2]
 z2 = data2[:, 3]
 
-data3 = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw3.csv',delimiter=",",dtype=float)
+data3 = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw3_nonstop.csv',delimiter=",",dtype=float)
 data3 = np.delete(data3,0,0)
 x3 = data3[:, 1]
 y3 = data3[:, 2]
@@ -48,7 +48,7 @@ plt.title("cost of demo 1");
 plt.xlabel("time window")
 plt.ylabel("KL_cost")
 
-"""
+
 cost2 = genfromtxt('/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv',delimiter=",",dtype=float)
 cost2 = np.delete(cost2,0,0)
 row2 = cost2[:, 0]
