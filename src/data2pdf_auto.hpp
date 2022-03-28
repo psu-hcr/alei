@@ -99,7 +99,7 @@ class data2pdf_auto {
 		ofstream costfile, segfile;
 		while((n_seg != prev_seg)||( prev_seg != pprev_seg)||( pprev_seg != ppprev_seg)){
 			
-			int step = w/5;
+			int step = w/10;
 			
 			ppprev_seg = pprev_seg;
 			pprev_seg = prev_seg;

@@ -122,7 +122,7 @@ class k_medoids {
 		else{
 			cout<<"ERROR: n_seg are not same for each demo"<<endl;
 		}
-		cout<<"Prob \n"<<Prob<<endl;
+		//cout<<"Prob \n"<<Prob<<endl;
 		cout<<"list \n"<<list<<endl;
 		return list;
 	}

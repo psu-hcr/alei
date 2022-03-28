@@ -11,10 +11,6 @@ using namespace std;
 
 #include"src/data2pdf_auto.hpp"
 
-arma::vec unom(double t){
-        return arma::zeros(3,1);
-};
-
 int main(){ 
 	arma::mat Data1, Data2, Data3;
 	
@@ -22,13 +18,13 @@ int main(){
  	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording2.csv");
 	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording3.csv");
 	
-	double L1 = 2.5;
-	double L2 = 2.5;
-	double L3 = 2.5;
-	double dL1 = 0.05;
-	double dL2 = 0.05;
-	double dL3 = 0.05;
-	arma::vec new_origin = {0., 0., 0.};
+	double L1 = 1.2;
+	double L2 = 1.2;
+	double L3 = 1.2;
+	double dL1 = 0.01;
+	double dL2 = 0.01;
+	double dL3 = 0.01;
+	arma::vec new_origin = {0., 0., 1.1};
 	
 	data2pdf_auto seg1(Data1, L1, L2, L3, dL1, dL2, dL3, new_origin);
 	data2pdf_auto seg2(Data2, L1, L2, L3, dL1, dL2, dL3, new_origin);
