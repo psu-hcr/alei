@@ -39,9 +39,9 @@ int main(){
 	double L1 = 1.2;
 	double L2 = 1.2;
 	double L3 = 1.2;
-	double dL1 = 0.01;
-	double dL2 = 0.01;
-	double dL3 = 0.01;
+	double dL1 = 0.05;
+	double dL2 = 0.05;
+	double dL3 = 0.05;
 	arma::vec new_origin = {0., 0., 1.1};
 	
 	data2pdf_auto phid1(Data1, L1, L2, L3, dL1, dL2, dL3, new_origin);

@@ -22,7 +22,7 @@ int main(){
 	arma::cube phid;
 	phid.load("/home/zxl5344/test/src/alei/Gaussian_traj/subtask0.csv");
 	cout<<arma::accu(phid)<<endl;
-	cout<<phid(128, 139, 104)<<endl;
+	cout<<phid(40, 39, 25)<<endl;
     dot_model syst1 (1./100.);
     syst1.Ucurr = unom(0); 
     random_device rd; mt19937 eng(rd());
@@ -32,7 +32,7 @@ int main(){
     arma::mat R = 0.001*arma::eye(3,3); double q=1.;
     arma::vec umax = {5.0, 5.0, 5.0};
     double T = 0.6;
-	double xbound = 0.5,ybound = 0.5,zbound = 1.2;
+	double xbound = 1.2,ybound = 1.2,zbound = 1.2;
     arma::mat SIGMA = 0.01*arma::eye(3,3);	
     dkl_cost_cube<dot_model> cost (q,R,100,SIGMA,0,2,4, phid,xbound,ybound,zbound,T,&syst1);	
     sac<dot_model,dkl_cost_cube<dot_model>> sacsys (&syst1,&cost,0.,T,umax,unom);
@@ -64,7 +64,7 @@ int main(){
 		
 		if(fmod(syst1.tcurr,2)<syst1.dt){
 			cout<<"Time: "<<syst1.tcurr<<"\n"<<syst1.Xcurr<<"\n";
-			cout<<"cost is "<<sacsys.J1new<<endl;
+			cout<<"ps is "<<cost.ps_i<<endl;
 		}
     } 
       

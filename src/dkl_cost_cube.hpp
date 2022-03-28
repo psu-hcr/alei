@@ -107,12 +107,12 @@ template<class system> void dkl_cost_cube<system>::resample(){
   arma::vec domainsize = {2.*L1, 2.*L2, 2.*L3};//{2*L1,2*L2};
   domainsamps=arma::diagmat(domainsize)*arma::randu<arma::mat>(3,K);//generate uniform random samples from 0 to 2*L
   domainsamps.each_col() -= (0.5*domainsize);//shift samples to go from -L to L
-  #pragma omp parallel for
+  //#pragma omp parallel for
   for(int n=0;n<ps_i.n_rows;n++){
-	int posX = (domainsamps(0, n) + L1)/0.01;	//cout<<"posX "<<posX<<endl;
-	int posY = (domainsamps(1, n) + L2)/0.01;	//cout<<"posY "<<posY<<endl;
-	int posZ = (domainsamps(2, n) + L3)/0.01;	//cout<<"posZ "<<posZ<<endl;
-    ps_i(n) = phid(posX, posY, posZ); //cout<<"phid(posX, posY, posZ)"<<phid(posX, posY, posZ)<<endl;
+	int posX = (domainsamps(0, n) + L1)/0.05;	//cout<<"posX "<<posX<<endl;
+	int posY = (domainsamps(1, n) + L2)/0.05;	//cout<<"posY "<<posY<<endl;
+	int posZ = (domainsamps(2, n) + L3)/0.05;	//cout<<"posZ "<<posZ<<endl;
+    ps_i(n) = phid(posX, posY, posZ); 					//cout<<"phid(posX, posY, posZ)"<<phid(posX, posY, posZ)<<endl;
   };
   ps_i=arma::normalise(ps_i,1);//normalise the discrete pdf over the samples
 }

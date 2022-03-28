@@ -5,6 +5,7 @@
 #include<math.h>
 #include <algorithm>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -26,9 +27,9 @@ class data2pdf_auto {
 		new_origin = _origin;
 		L1 = _L1; L2 = _L2; L3 = _L3; 	// Boundary for PDF
 		dL1 = _dL1;  dL2 = _dL2; dL3 = _dL3;	// size of grid
-		n_rows = 2*int(L1/dL1);	//cout<<"n_rows"<<n_rows<<endl;
-		n_cols = 2*int(L2/dL2);	//cout<<"n_cols"<<n_cols<<endl;
-		n_slices = 2*int(L3/dL3);	//cout<<"n_slices"<<n_slices<<endl;
+		n_rows = round(2*L1/dL1);		//cout<<"n_rows"<<n_rows<<endl;
+		n_cols = round(2*L2/dL2);		//cout<<"n_cols"<<n_cols<<endl;
+		n_slices = round(2*L3/dL3);	//cout<<"n_slices"<<n_slices<<endl;
 		phi = arma::zeros( n_rows, n_cols, n_slices );
 		phi_t = arma::zeros( n_rows, n_cols, n_slices );
 		shift1 = L1 - new_origin(0);
