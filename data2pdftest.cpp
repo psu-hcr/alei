@@ -9,6 +9,7 @@
 using namespace std;
 
 #include"src/data2pdf.hpp"
+#include"src/data2pdf_auto.hpp"
 #include"src/dot_model.hpp"
 #include"src/dkl_cost_pdf.hpp"
 #include"src/SAC.hpp"
@@ -19,76 +20,76 @@ arma::vec unom(double t){
 
 int main(){ 
 	arma::mat Data1, Data2, Data3;
-	/*
-	Data1.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample1.csv"); 	
-	Data2.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample2.csv"); 	
-	Data3.load("/home/zxl5344/test/src/alei/Sweeping data/ArucoPositionSample3.csv"); 	
-	*/
-	Data1.load("/home/zxl5344/test/src/alei/Sweeping data/dot1.csv"); 	
-	Data2.load("/home/zxl5344/test/src/alei/Sweeping data/dot1.csv"); 	
-	Data3.load("/home/zxl5344/test/src/alei/Sweeping data/dot1.csv"); 
-	/*
-	double L1 = 0.8;
-	double L2 = 0.5;
-	double L3 = 1.3;
+
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw1.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw2.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw3.csv"); 
+	
+	ofstream KL1, KL2, KL3;
+	KL1.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv");
+	KL2.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv");
+	KL3.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv");
+	
+	double L1 = 1.5;
+	double L2 = 1.5;
+	double L3 = 1.5;
 	double dL1 = 0.05;
 	double dL2 = 0.05;
 	double dL3 = 0.05;
-	*/
-	
-	double L1 = 0.1;
-	double L2 = 0.1;
-	double L3 = 0.1;
-	double dL1 = 0.005;
-	double dL2 = 0.005;
-	double dL3 = 0.005;
 	arma::vec new_origin = {0, 0, 0};
 	
-	data2pdf phid(Data1, Data2, Data3, L1, L2, L3, dL1, dL2, dL3, new_origin);
-	phid.calcpdf();
-	//cout<<phid.phi(90, 113, 225)<<endl;
-	cout<<"sum of phi: "<<arma::accu(phid.phi)<<endl;
-	//phid.phi.save("/home/zxl5344/test/src/alei/Sweeping data/phi.csv", arma::arma_ascii);
-	arma::vec pos = {0., 0.,  0.};
-	cout<<"read phi at(0., 0.,  0.): "<<phid.readpdf(pos)<<endl;
+	data2pdf_auto phid1(Data1,L1, L2, L3, dL1, dL2, dL3, new_origin);
+	data2pdf_auto phid2(Data2,L1, L2, L3, dL1, dL2, dL3, new_origin);
+	data2pdf_auto phid3(Data3,L1, L2, L3, dL1, dL2, dL3, new_origin);
+	int T = 0.5*50; // Window_size* 50HZ 
+	arma::cube P, Q;
 	
-	dot_model syst1 (1./100.);
-    syst1.Ucurr = unom(0); 
-    random_device rd; mt19937 eng(rd());
-    uniform_real_distribution<> distr(-0.4,0.4);
-    syst1.Xcurr = {-0.3,0.0,0.2,0.0,-0.2,0.0};
-    //syst1.Xcurr = {distr(eng),distr(eng),distr(eng),distr(eng),distr(eng),distr(eng)};//must be initialized before instantiating cost
-    arma::mat R = 0.001*arma::eye(3,3); double q=1.;
-    arma::vec umax =  {5.0, 5.0, 5.0};
-    double T = 0.6;
-    arma::mat SIGMA = 0.01*arma::eye(3,3);	
-    dklcost_pdf<dot_model, data2pdf> cost (q,R,100,SIGMA,0,2,4, &phid, L1,L2,L3,T,&syst1);	
-    sac<dot_model, dklcost_pdf<dot_model, data2pdf>> sacsys (&syst1,&cost,0.,T,umax,unom);
+	/*
+	P = phid1.pdf_t(0, T);
+	for (int i =1; i<Data1.n_rows;i++){
+
+		Q = phid1.pdf_t(i, T+i);
+		double cost = phid1.KL(P, Q) + phid1.KL(Q, P);
+		KL1<<i<<","<<cost;
+		KL1<<"\n";
+	}
 	
-	ofstream myfile;
-    myfile.open ("/home/zxl5344/test/src/alei/robotdata/data2pdftest.csv");
 	
-	arma::vec xwrap;
-	myfile<<"time,x,y,z,wx,wy,wz, w,\n";
+	P = phid2.pdf_t(0, T);
+	for (int i =1; i<Data2.n_rows;i++){
+
+		Q = phid2.pdf_t(i, T+i);
+		double cost = phid2.KL(P, Q) + phid2.KL(Q, P);
+		KL2<<i<<","<<cost;
+		KL2<<"\n";
+	}
 	
-	while (syst1.tcurr<100.){
-		//double start_time = omp_get_wtime();
-		cost.xmemory(syst1.Xcurr);	//cout<<"cost.xmemory"<<endl;
-		//cout <<"resamp time: "<< 1000 * (omp_get_wtime() - start_time)<<endl;
-		if(fmod(syst1.tcurr,2)<syst1.dt){
-			cout<<"Time: "<<syst1.tcurr<<"\n";
-			cout<<"Xcurr: \n"<<syst1.Xcurr<<"\n";
-			cout<<"Ucurr: \n"<<syst1.Ucurr<<"\n";
+	P = phid3.pdf_t(0, T);
+	for (int i =1; i<Data3.n_rows;i++){
+
+		Q = phid3.pdf_t(i, T+i);
+		double cost = phid3.KL(P, Q) + phid3.KL(Q, P);
+		KL3<<i<<","<<cost;
+		KL3<<"\n";
+	}
+	
+	*/
+	
+	P = phid1.pdf_t(0, T)+phid2.pdf_t(0, T)+phid3.pdf_t(0, T);
+	P = P/arma::accu(P);	// normalize
+	for (int i =1; i<Data1.n_rows;i++){
+		if( (i<Data2.n_rows)&&(i<Data3.n_rows)){
+			Q = phid1.pdf_t(i, T+i)+phid2.pdf_t(i, T+i)+phid3.pdf_t(i, T+i);
+			Q = Q/arma::accu(Q);
+			double cost = phid1.KL(P, Q) + phid1.KL(Q, P);
+			KL1<<i<<","<<cost;
+			KL1<<"\n";
 		}
-		xwrap = syst1.proj_func(syst1.Xcurr); 
-		myfile<<syst1.tcurr<<",";
-		// move sys to desire location
-		myfile<<xwrap(0)<<","<<xwrap(2)<<","<<xwrap(4)<<",";
-		myfile<<1<<","<<0<<","<<0<<","<<0<<",";
-		myfile<<"\n";	
-		syst1.step();	//cout<<"syst1.step()"<<endl;
-		sacsys.SAC_calc();	//cout<<"sacsys.SAC_calc"<<endl;
-		syst1.Ucurr = sacsys.ulist.col(0); 	//cout<<"syst1.Ucurr"<<endl;
-		sacsys.unom_shift();  
-    } 
+		
+	}
+	
+	KL1.close();
+	KL2.close();
+	KL3.close();
+	
 }

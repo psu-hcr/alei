@@ -76,6 +76,7 @@ class data2pdf {
 		
 		return phi;
 	};
+	
 	double readpdf(arma::vec pos){
 		// read pdf at pos
 		
