@@ -16,6 +16,7 @@ class data2pdf_auto {
 	int n_rows, n_cols, n_slices;
 	double L1, L2, L3;
 	double dL1, dL2, dL3;
+	double shift1, shift2, shift3;
 	data2pdf_auto (arma::mat _data1, double _L1, double _L2, double _L3, double _dL1, double _dL2, double _dL3, arma::vec _origin){
 		// this is a class convert data from a datasheet into a 3 dim PDF wrt to _origin. 
 		// This class can automatically segment task
@@ -30,6 +31,9 @@ class data2pdf_auto {
 		n_slices = 2*int(L3/dL3);	//cout<<"n_slices"<<n_slices<<endl;
 		phi = arma::zeros( n_rows, n_cols, n_slices );
 		phi_t = arma::zeros( n_rows, n_cols, n_slices );
+		shift1 = L1 - new_origin(0);
+		shift2 = L2 - new_origin(1);
+		shift3 = L3 - new_origin(2);
 	};
 	
 	arma::cube pdf_t(int start, int col){
@@ -44,9 +48,9 @@ class data2pdf_auto {
 		//cout<<"data1"<<endl;
 		for (int i = start; i < col; i++){
 			// shift x y z off center
-			double x = data1(i, 1) + L1 - new_origin(0);
-			double y = data1(i, 2) + L2 - new_origin(1);
-			double z = data1(i, 3) + L3 - new_origin(2);
+			double x = data1(i, 1) + shift1;
+			double y = data1(i, 2) + shift2;
+			double z = data1(i, 3) + shift3;
 			
 			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
@@ -61,9 +65,7 @@ class data2pdf_auto {
 	};
 	
 	arma::cube sum_pdf_t(int start, int col, arma::cube phi_init){
-		// calculate pdf till col
-		
-		// reinitialze phi_t
+		// initialze phi_t
 		phi_t = phi_init;
 		
 		if(col > data1.n_rows) col = data1.n_rows;
@@ -72,9 +74,9 @@ class data2pdf_auto {
 		//cout<<"data1"<<endl;
 		for (int i = start; i < col; i++){
 			// shift x y z off center
-			double x = data1(i, 1) + L1 - new_origin(0);
-			double y = data1(i, 2) + L2 - new_origin(1);
-			double z = data1(i, 3) + L3 - new_origin(2);
+			double x = data1(i, 1) + shift1;
+			double y = data1(i, 2) + shift2;
+			double z = data1(i, 3) + shift3;
 			
 			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
 			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;

@@ -1,12 +1,12 @@
-#ifndef DKLCOST_HPP
-#define DKLCOST_HPP
+#ifndef dkl_cost_cube_HPP
+#define dkl_cost_cube_HPP
 #include<armadillo>
 #include<math.h>
 #include<omp.h>
 using namespace std;
 
 template <class system>
-class dklcost {
+class dkl_cost_cube {
   system* sys;
   double L1,L2,L3,T;
   int X1,X2, X3;//index of relavant dimensions in xvector
@@ -22,7 +22,7 @@ class dklcost {
     arma::mat R;
     int T_index,t_now=0;
     arma::cube phid;
-    dklcost(double _Q, arma::mat _R,int _K,arma::mat _sigma, int _X1,int _X2, int _X3,arma::cube _phid,double _L1,double _L2, 
+    dkl_cost_cube(double _Q, arma::mat _R,int _K,arma::mat _sigma, int _X1,int _X2, int _X3,arma::cube _phid,double _L1,double _L2, 
 	double _L3, double _T,system *_sys){
       Q=_Q; R=_R; sys=_sys; K = _K; phid = _phid; T=_T; // initialize with Q, R, sys, phid, and the domain
       X1 = _X1; X2=_X2; X3=_X3; L1 = _L1; L2 = _L2; L3 = _L3;X_DKL<<X1<<X2<<X3; sigma=_sigma;
@@ -42,7 +42,7 @@ class dklcost {
     void qs_disc(const arma::mat& x);
 };/////////end main class def
 
-template<class system> double dklcost<system>::l (const arma::vec& x,const arma::vec& u,double ti){
+template<class system> double dkl_cost_cube<system>::l (const arma::vec& x,const arma::vec& u,double ti){
       arma::vec xproj = sys->proj_func(x);
       arma::mat Qtemp = arma::zeros<arma::mat>(xproj.n_rows,xproj.n_rows);
       Qtemp(X1,X1)= pow(xproj(X1)/(L1+(0.1*L1)),8);
@@ -51,7 +51,7 @@ template<class system> double dklcost<system>::l (const arma::vec& x,const arma:
       return arma::as_scalar((xproj.t()*Qtemp*xproj+u.t()*R*u)/2);
 }
 
-template<class system> arma::vec dklcost<system>::dldx (const arma::vec&x, const arma::vec& u, double ti){
+template<class system> arma::vec dkl_cost_cube<system>::dldx (const arma::vec&x, const arma::vec& u, double ti){
   arma::vec xproj = sys->proj_func(x);
   arma::vec a; a.zeros(xproj.n_rows);
   arma::mat Qtemp = arma::zeros<arma::mat>(xproj.n_rows,xproj.n_rows);
@@ -65,7 +65,7 @@ template<class system> arma::vec dklcost<system>::dldx (const arma::vec&x, const
   };
   return a;}
 
-template<class system> double dklcost<system>::calc_cost (const arma::mat& x,const arma::mat& u){
+template<class system> double dkl_cost_cube<system>::calc_cost (const arma::mat& x,const arma::mat& u){
   double J1 = 0.,Jtemp;
   arma::mat xjoined;
   if(t_now<=180){xjoined = arma::join_rows(xpast.cols(0,t_now),x);}
@@ -79,7 +79,7 @@ template<class system> double dklcost<system>::calc_cost (const arma::mat& x,con
   };
 return J1;}
 
-template<class system> void dklcost<system>::qs_disc(const arma::mat& x){//double start_time = omp_get_wtime();
+template<class system> void dkl_cost_cube<system>::qs_disc(const arma::mat& x){//double start_time = omp_get_wtime();
   #pragma omp parallel for
   for(int n=0;n<qs_i.n_rows;n++){
     qs_i(n) = 0.;
@@ -102,9 +102,9 @@ template<class system> void dklcost<system>::qs_disc(const arma::mat& x){//doubl
   //if((omp_get_wtime() - start_time)>1./60.) cout <<"qi time: "<<(omp_get_wtime() - start_time)<<endl;
 }
       
-template<class system> void dklcost<system>::resample(){
+template<class system> void dkl_cost_cube<system>::resample(){
   //Choose K samples over the domain [[-L1,L1],[-L2,L2]]
-  arma::vec domainsize = {phid.n_rows, phid.n_cols, phid.n_slices};
+  arma::vec domainsize = {double(phid.n_rows), double(phid.n_cols), double(phid.n_slices)};
   domainsamps=arma::diagmat(domainsize)*arma::randu<arma::mat>(3,K);//generate uniform random samples
   #pragma omp parallel for
   for(int n=0;n<ps_i.n_rows;n++){
@@ -113,7 +113,7 @@ template<class system> void dklcost<system>::resample(){
   ps_i=arma::normalise(ps_i,1);//normalise the discrete pdf over the samples
 }
 
-template<class system> void dklcost<system>::xmemory(const arma::vec& x){
+template<class system> void dkl_cost_cube<system>::xmemory(const arma::vec& x){
   xpast.col(t_now)= x;
   t_now++;
   resample();

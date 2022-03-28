@@ -56,17 +56,19 @@ int main(){
 	arma::cube Q;
 	
 	for(int i = 0; i<n_seg; i++){
-		for(int j = i; j<n_seg; j++){
-			if( i<seg1.n_rows-1){
-				P = phid1.pdf_t(seg1(i), seg1(i+1));
-			}
-			else if( i<seg1.n_rows+seg2.n_rows-2){
-				P = phid2.pdf_t(seg2(i-seg1.n_rows+1), seg2(i-seg1.n_rows+2));
-			}
-			else{
-				P = phid3.pdf_t(seg3(i-seg1.n_rows-seg2.n_rows+2), seg3(i-seg1.n_rows-seg2.n_rows+3));
-			}
 		
+		if( i<seg1.n_rows-1){
+			P = phid1.pdf_t(seg1(i), seg1(i+1));
+		}
+		else if( i<seg1.n_rows+seg2.n_rows-2){
+			P = phid2.pdf_t(seg2(i-seg1.n_rows+1), seg2(i-seg1.n_rows+2));
+		}
+		else{
+			P = phid3.pdf_t(seg3(i-seg1.n_rows-seg2.n_rows+2), seg3(i-seg1.n_rows-seg2.n_rows+3));
+		}
+			
+		for(int j = i; j<n_seg; j++){
+			
 			if( j<seg1.n_rows-1){
 				Q = phid1.pdf_t(seg1(j), seg1(j+1));
 			}
@@ -191,6 +193,18 @@ int main(){
 		}
 		
 	}
-	
 	cout<<"complete task"<<endl;
+	
+	// save the subtask PDF
+	ofstream sub0, sub1, sub2;
+	sub0.open("/home/zxl5344/test/src/alei/Gaussian_traj/subtask0.csv");
+	subtask0.save(sub0,arma::arma_ascii);
+	sub0.close();
+	sub1.open("/home/zxl5344/test/src/alei/Gaussian_traj/subtask1.csv");
+	subtask1.save(sub1,arma::arma_ascii);
+	sub1.close();
+	sub2.open("/home/zxl5344/test/src/alei/Gaussian_traj/subtask2.csv");
+	subtask2.save(sub2,arma::arma_ascii);
+	sub2.close();
+	cout<<"subtasks are saved"<<endl;
 }

@@ -114,6 +114,9 @@ target_link_libraries(3point  ${ARMADILLO_LIBRARIES})
 add_executable(k_medoid k_medoidstest.cpp)
 target_link_libraries(k_medoid  ${ARMADILLO_LIBRARIES})
 
+add_executable(dklsac_cube dklsac_cube.cpp)
+target_link_libraries(dklsac_cube ${ARMADILLO_LIBRARIES})
+
 
 
 
