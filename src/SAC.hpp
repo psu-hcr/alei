@@ -43,6 +43,7 @@ class sac {
   bool iterative=false;
   int T_index;
   arma::mat ulist;
+  double J1init,J1new,dJmin,alphad,lambda;
     
   sac(system *_sys, objective *_cost, double _tcalc,double _T,const arma::vec& _umax,std::function<arma::vec(double)> _unom){
     sys = _sys; cost=_cost; tcalc=_tcalc; T=_T;umax = _umax; unom = _unom;
@@ -73,7 +74,6 @@ void sac<system,objective>::SAC_calc(){
   arma::mat utemp = ulist;
   arma::mat usched = arma::zeros<arma::mat>(umax.n_rows,T_index);
   arma::mat Jtau = arma::zeros<arma::mat>(1,T_index);
-  double J1init,J1new,dJmin,alphad,lambda;     
   xsol = xforward(ulist);
   J1init = cost->calc_cost(xsol,ulist);//must execute before rhoback for ergodic cost fxns
   rhosol = rhoback(xsol, ulist);

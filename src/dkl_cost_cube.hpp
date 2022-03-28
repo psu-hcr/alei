@@ -71,7 +71,7 @@ template<class system> double dkl_cost_cube<system>::calc_cost (const arma::mat&
   if(t_now<=180){xjoined = arma::join_rows(xpast.cols(0,t_now),x);}
   else{xjoined = arma::join_rows(xpast.cols(t_now-120,t_now),x);};	//cout<<"test"<<endl;
   qs_disc(xjoined);	//cout<<"qs_disc"<<endl;
-  J1 = -arma::as_scalar(arma::sum(ps_i%arma::log(qs_i)));	//cout<<"J1"<<endl;
+  J1 = -arma::as_scalar(arma::sum(ps_i%arma::log(qs_i)));	//cout<<"ps_i= "<<ps_i<<endl;
   J1 = Q*J1;
   for (int i = 0; i<x.n_cols; i++){
     arma::vec xproj = sys->proj_func(x.col(i));
@@ -104,11 +104,15 @@ template<class system> void dkl_cost_cube<system>::qs_disc(const arma::mat& x){/
       
 template<class system> void dkl_cost_cube<system>::resample(){
   //Choose K samples over the domain [[-L1,L1],[-L2,L2]]
-  arma::vec domainsize = {double(phid.n_rows), double(phid.n_cols), double(phid.n_slices)};
-  domainsamps=arma::diagmat(domainsize)*arma::randu<arma::mat>(3,K);//generate uniform random samples
+  arma::vec domainsize = {2.*L1, 2.*L2, 2.*L3};//{2*L1,2*L2};
+  domainsamps=arma::diagmat(domainsize)*arma::randu<arma::mat>(3,K);//generate uniform random samples from 0 to 2*L
+  domainsamps.each_col() -= (0.5*domainsize);//shift samples to go from -L to L
   #pragma omp parallel for
   for(int n=0;n<ps_i.n_rows;n++){
-    ps_i(n) = phid(int(domainsamps(0, n)), int(domainsamps(1, n)), int(domainsamps(2, n)));
+	int posX = (domainsamps(0, n) + L1)/0.01;	//cout<<"posX "<<posX<<endl;
+	int posY = (domainsamps(1, n) + L2)/0.01;	//cout<<"posY "<<posY<<endl;
+	int posZ = (domainsamps(2, n) + L3)/0.01;	//cout<<"posZ "<<posZ<<endl;
+    ps_i(n) = phid(posX, posY, posZ); //cout<<"phid(posX, posY, posZ)"<<phid(posX, posY, posZ)<<endl;
   };
   ps_i=arma::normalise(ps_i,1);//normalise the discrete pdf over the samples
 }
