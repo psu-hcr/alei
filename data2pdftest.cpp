@@ -19,24 +19,26 @@ arma::vec unom(double t){
 };
 
 int main(){ 
+	
 	arma::mat Data1, Data2, Data3;
 
-	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw1_nonstop.csv"); 	
-	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw2_nonstop.csv"); 	
-	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw3_nonstop.csv"); 
-	
-	ofstream KL1, KL2, KL3;
-	KL1.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv");
-	KL2.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv");
-	KL3.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv");
+	Data1.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw4_nonstop.csv"); 	
+	Data2.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw5_nonstop.csv"); 	
+	Data3.load("/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw6_nonstop.csv"); 
 	
 	double L1 = 0.5;
 	double L2 = 0.5;
 	double L3 = 0.5;
-	double dL1 = 0.01;
-	double dL2 = 0.01;
-	double dL3 = 0.01;
-	arma::vec new_origin = {0, 0, 0.6};
+	double dL1 = 0.005;
+	double dL2 = 0.005;
+	double dL3 = 0.005;
+	arma::vec new_origin = {0, 0, 0.7};
+	
+	/*
+	ofstream KL1, KL2, KL3;
+	KL1.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv");
+	KL2.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL2.csv");
+	KL3.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL3.csv");
 	
 	data2pdf_auto phid1(Data1,L1, L2, L3, dL1, dL2, dL3, new_origin);
 	data2pdf_auto phid2(Data2,L1, L2, L3, dL1, dL2, dL3, new_origin);
@@ -73,8 +75,6 @@ int main(){
 		KL3<<"\n";
 	}
 	
-	
-	/*
 	P = phid1.pdf_t(0, T)+phid2.pdf_t(0, T)+phid3.pdf_t(0, T);
 	P = P/arma::accu(P);	// normalize
 	for (int i =1; i<Data1.n_rows;i++){
@@ -87,10 +87,43 @@ int main(){
 		}
 		
 	}
-	*/
 	
 	KL1.close();
 	KL2.close();
 	KL3.close();
+	*/
+	
+	dot_model syst1 (1./100.);
+    syst1.Ucurr = unom(0); 
+    random_device rd; mt19937 eng(rd());
+    uniform_real_distribution<> distr(-0.4,0.4);
+    syst1.Xcurr = {distr(eng),distr(eng),distr(eng),distr(eng),distr(eng),distr(eng)};//must be initialized before instantiating cost
+    arma::mat R = 0.001*arma::eye(3,3); double q=1.;
+    arma::vec umax = {5.0, 5.0, 5.0};
+    double T = 0.6;
+    arma::mat SIGMA = 0.01*arma::eye(3,3);
+	data2pdf phid(Data1,Data2,Data3,L1, L2, L3, dL1, dL2, dL3, new_origin);
+	int samples = 0.5*50; // Sampling freq is 50HZ
+	phid.calcpdf(samples);
+	dklcost_pdf<dot_model, data2pdf> cost(q,R,100000,SIGMA,0,2,4, &phid,L1,L2,L3,T,&syst1);
+	ofstream KL1;
+	KL1.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv");
+	
+	for (int i =1; i<Data1.n_rows-samples;i++){
+		arma::vec Xcurr = {Data1(i, 1), 0, Data1(i, 2), 0,Data1(i, 3)-0.7, 0};
+		cost.xmemory(Xcurr);											//cout<<"xmemory"<<endl;
+		arma::mat traj = arma::zeros(6, samples);
+		for (int j=0; j<traj.n_cols;j++){
+			arma::vec new_Xcurr = {Data1(i+j, 1), 0, Data1(i+j, 2), 0,Data1(i+j, 3)-0.7, 0};
+			traj.col(j) = new_Xcurr;
+		}
+		arma::mat Umat = arma::zeros(3, samples);					//cout<<"Umat"<<endl;
+		double C = cost.calc_cost(traj, Umat);									//cout<<"calc_cost"<<endl;
+		if (C>0.01){
+			KL1<<i<<","<<C;
+			KL1<<"\n";
+		}
+	}
+	KL1.close();
 	
 }

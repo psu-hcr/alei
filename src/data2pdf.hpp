@@ -26,53 +26,53 @@ class data2pdf {
 		phi = arma::zeros( n_rows, n_cols, n_slices );
 	};
 	
-	arma::cube calcpdf(){
+	arma::cube calcpdf(int T){
 		// calculate pdf based on input data
 		
 		// add data for datasheet 1
 		//cout<<"data1"<<endl;
-		for (int i = 0; i < data1.n_rows; i++){
+		for (int i = 0; i < T; i++){
 			// shift x y z off center
 			double x = data1(i, 1) + L1 - new_origin(0);
 			double y = data1(i, 2) + L2 - new_origin(1);
 			double z = data1(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 2
 		//cout<<"data2"<<endl;
-		for (int i = 0; i < data2.n_rows; i++){
+		for (int i = 0; i < T; i++){
 			// shift x y z off center
 			double x = data2(i, 1) + L1 - new_origin(0);
 			double y = data2(i, 2) + L2 - new_origin(1);
 			double z = data2(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// add data for datasheet 3
 		//cout<<"data3"<<endl;
-		for (int i = 0; i < data3.n_rows; i++){
+		for (int i = 0; i < T; i++){
 			// shift x y z off center
 			double x = data3(i, 1) + L1 - new_origin(0);
 			double y = data3(i, 2) + L2 - new_origin(1);
 			double z = data3(i, 3) + L3 - new_origin(2);
 			
-			int n_x = int(x/dL1);	cout<<"n_x"<<n_x<<endl;
-			int n_y = int(y/dL2);	cout<<"n_y"<<n_y<<endl;
-			int n_z = int(z/dL3);	cout<<"n_z"<<n_z<<endl;
-			phi(n_x, n_y, n_z)++;	cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
+			int n_x = int(x/dL1);	//cout<<"n_x"<<n_x<<endl;
+			int n_y = int(y/dL2);	//cout<<"n_y"<<n_y<<endl;
+			int n_z = int(z/dL3);	//cout<<"n_z"<<n_z<<endl;
+			phi(n_x, n_y, n_z)++;	//cout<<"phi(n_x, n_y, n_z)"<<phi(n_x, n_y, n_z)<<endl;
 		};
 		
 		// normalize phi
-		phi = phi/(data1.n_rows+data2.n_rows+data3.n_rows);
+		phi = phi/(3*T);
 		
 		return phi;
 	};

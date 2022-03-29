@@ -70,7 +70,8 @@ template<class system, class data2pdf> double dklcost_pdf<system, data2pdf>::cal
   arma::mat xjoined;
   if(t_now<=180){xjoined = arma::join_rows(xpast.cols(0,t_now),x);}
   else{xjoined = arma::join_rows(xpast.cols(t_now-120,t_now),x);};	//cout<<"test"<<endl;
-  qs_disc(xjoined);	//cout<<"qs_disc"<<endl;
+  //qs_disc(xjoined);	//cout<<"qs_disc"<<endl;
+  qs_disc(x);
   J1 = -arma::as_scalar(arma::sum(ps_i%arma::log(qs_i)));	//cout<<"J1"<<endl;
   J1 = Q*J1;
   for (int i = 0; i<x.n_cols; i++){
