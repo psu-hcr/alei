@@ -103,5 +103,23 @@ plt.plot(row3,KL3, 'y')
 plt.title("cost of demo 3");
 """
 
+dataxyz = genfromtxt('/home/zxl5344/test/src/alei/Gaussian_traj/CameraRecording_screw5_nonstop.csv',delimiter=",",dtype=float)
+strat = 1
+end = int(row1[-1])
+x_align = dataxyz[strat:end, 1]
+y_align = dataxyz[strat:end, 2]
+z_align = dataxyz[strat:end, 3]
+
+fig2, axs2 = plt.subplots(3, 1,sharex=True)
+axs2[0].plot(row1,x_align, 'r')
+axs2[0].set_ylabel("x")
+axs2[1].plot(row1,y_align, 'y')
+axs2[1].set_ylabel("y")
+axs2[2].plot(row1,z_align, 'b')
+axs2[2].set_ylabel("z")
+axs2[2].set_xlabel("t")
+
+
+
 plt.show()
 

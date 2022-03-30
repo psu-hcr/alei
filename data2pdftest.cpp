@@ -103,18 +103,19 @@ int main(){
     double T = 0.6;
     arma::mat SIGMA = 0.01*arma::eye(3,3);
 	data2pdf phid(Data1,Data2,Data3,L1, L2, L3, dL1, dL2, dL3, new_origin);
-	int samples = 1.5*50; // Sampling freq is 50HZ
+	int samples = 1.0*50; // Sampling freq is 50HZ
+	cout<<"samples size: "<<samples<<endl;
 	phid.calcpdf(samples);
-	dklcost_pdf<dot_model, data2pdf> cost(q,R,100000000,SIGMA,0,2,4, &phid,L1,L2,L3,T,&syst1);
+	dklcost_pdf<dot_model, data2pdf> cost(q,R,10000000,SIGMA,0,2,4, &phid,L1,L2,L3,T,&syst1);
 	ofstream KL1;
 	KL1.open("/home/zxl5344/test/src/alei/robotdata/data2pdf_KL1.csv");
-	arma::vec Xcurr = {Data3(0, 1), 0, Data3(0, 2), 0,Data3(0, 3)-0.7, 0};
+	arma::vec Xcurr = {Data2(0, 1), 0, Data2(0, 2), 0,Data2(0, 3)-0.7, 0};
 	cost.xmemory(Xcurr);
-	for (int i =1; i<Data3.n_rows-samples;i++){
+	for (int i =1; i<Data2.n_rows-samples;i++){
 
 		arma::mat traj = arma::zeros(6, samples);
 		for (int j=0; j<traj.n_cols;j++){
-			arma::vec new_Xcurr = {Data3(i+j, 1), 0, Data3(i+j, 2), 0,Data3(i+j, 3)-0.7, 0};
+			arma::vec new_Xcurr = {Data2(i+j, 1), 0, Data2(i+j, 2), 0,Data2(i+j, 3)-0.7, 0};
 			traj.col(j) = new_Xcurr;
 		}
 		arma::mat Umat = arma::zeros(3, samples);					//cout<<"Umat"<<endl;
